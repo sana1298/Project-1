@@ -9,16 +9,14 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const LoginForm = () => {
-//   const [logEmail, setLogEmail] = useState('')
-//   const [logPassword, setLogPassword] = useState('')
-const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     logEmail: '',
     logPassword: '',
   });
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(false)
   const navigate = useNavigate()
- 
+
   const handleLogin = () => {
     const { logEmail, logPassword } = formData;
     if (!logEmail || !logPassword) {
@@ -41,12 +39,10 @@ const [formData, setFormData] = useState({
     } else {
       setError(true);
     }
-    // setLogEmail('');
-    // setLogPassword('');
     setFormData({
-        logEmail: '',
-        logPassword: '',
-      });
+      logEmail: '',
+      logPassword: '',
+    });
   };
 
   const handleClose = (reason) => {
@@ -57,13 +53,6 @@ const [formData, setFormData] = useState({
     setSuccess(false);
     setError(false);
   };
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
   return (
     <>
       <Box
@@ -71,16 +60,16 @@ const [formData, setFormData] = useState({
           width: 300,
           height: 320,
           backgroundColor: '#b7c6e8',
-          mt:20,
-          mx:60,
-          p:2
+          mt: 20,
+          mx: 60,
+          p: 2
         }}
       >
         <Typography variant='h5'>Login</Typography>
         <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="logEmail"
           value={formData.logEmail}
-          onChange={(e)=>setFormData({...formData,logEmail:e.target.value})}
-          />
+          onChange={(e) => setFormData({ ...formData, logEmail: e.target.value })}
+        />
         <TextField
           sx={{ my: 1 }}
           id="outlined-password-input"
@@ -89,7 +78,7 @@ const [formData, setFormData] = useState({
           autoComplete="current-password"
           name="logPassword"
           value={formData.logPassword}
-          onChange={(e)=>setFormData({...formData,logPassword:e.target.value})}
+          onChange={(e) => setFormData({ ...formData, logPassword: e.target.value })}
         />
         <Button sx={{ my: 1 }} variant="contained" onClick={handleLogin}>Login</Button>
         <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>

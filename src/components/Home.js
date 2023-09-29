@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, AppBar, Toolbar, Typography, InputBase, Button, Card,CardMedia } from '@mui/material';
+import { Box, Grid, AppBar, Toolbar, Typography, InputBase, Button, Card, CardMedia } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
 import { Navigate } from "react-router-dom";
 
@@ -96,32 +96,31 @@ const Home = () => {
                 onChange={(e) => setSearchValues(e.target.value)}
               />
             </Search>
-            <Button sx={{marginleft:5}} variant="contained" onClick={handleLogout}>Logout</Button>
+            <Button sx={{ marginleft: 5 }} variant="contained" onClick={handleLogout}>Logout</Button>
           </Toolbar>
         </AppBar>
       </Box>
       <Card>
-      <Grid container spacing={3}>
-        {filteredItem.map((item, index) => (
-          <Box key={index} 
-          sx={{
-            width: 240
-          }}
-            my={5}
-            mx={4}>
-            {/* <img src={item.images.jpg.image_url} alt='anime' /> */}
-            <CardMedia
+        <Grid container spacing={3}>
+          {filteredItem.map((item, index) => (
+            <Box key={index}
+              sx={{
+                width: 240
+              }}
+              my={5}
+              mx={4}>
+              <CardMedia
                 component="img"
                 height="400"
                 image={item.images.jpg.image_url}
                 alt="anime"
               />
-            <Typography>Title:{item.title}</Typography>
-            <Typography>Episodes:{item.episodes}</Typography>
-            <Typography>Rating:{item.score}</Typography>
-          </Box>
-        ))}
-      </Grid>
+              <Typography>Title:{item.title}</Typography>
+              <Typography>Episodes:{item.episodes}</Typography>
+              <Typography>Rating:{item.score}</Typography>
+            </Box>
+          ))}
+        </Grid>
       </Card>
     </>
   )
