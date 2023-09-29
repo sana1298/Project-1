@@ -57,13 +57,13 @@ const [formData, setFormData] = useState({
     setSuccess(false);
     setError(false);
   };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
   return (
     <>
       <Box
@@ -79,7 +79,8 @@ const [formData, setFormData] = useState({
         <Typography variant='h5'>Login</Typography>
         <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="logEmail"
           value={formData.logEmail}
-          onChange={handleChange} />
+          onChange={(e)=>setFormData({...formData,email:e.target.value})}
+          />
         <TextField
           sx={{ my: 1 }}
           id="outlined-password-input"
@@ -88,7 +89,7 @@ const [formData, setFormData] = useState({
           autoComplete="current-password"
           name="logPassword"
           value={formData.logPassword}
-          onChange={handleChange}
+          onChange={(e)=>setFormData({...formData,password:e.target.value})}
         />
         <Button sx={{ my: 1 }} variant="contained" onClick={handleLogin}>Login</Button>
         <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>
