@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import './App.css';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -6,7 +5,6 @@ import Error from'./components/Error';
 import Home from './components/Home';
 import Protect from './components/Protect';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { useEffect } from 'react';
 
 
 function App() {
@@ -23,6 +21,7 @@ function App() {
           <Route path="*" element={ <Error />} />
         </Routes>
       </Router>
+
 
     </div>
   );

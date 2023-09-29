@@ -5,6 +5,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { useUser } from '../context/UserContext';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -15,11 +16,13 @@ const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
 const RegisterForm = () => {
-  const [formData, setFormData] = useState({
-    userName: '',
-    email: '',
-    password: '',
-  });
+  // const [formData, setFormData] = useState({
+  //   userName: '',
+  //   email: '',
+  //   password: '',
+  // });
+  const { userData, updateUser } = useUser();
+  const [formData, setFormData] = useState(userData);
 
   const [errors, setErrors] = useState({
     userName: '',
@@ -29,6 +32,7 @@ const RegisterForm = () => {
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
   const [showPassword, setShowPassword] =useState(false);
+  
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -59,6 +63,11 @@ const RegisterForm = () => {
         email: formData.email,
         password: formData.password,
       };
+      updateUser(
+        userDetails.userName,
+        userDetails.email,
+        userDetails.password
+      );
       const existingData = JSON.parse(localStorage.getItem("data")) || [];
       existingData.push(userDetails);
       localStorage.setItem("data", JSON.stringify(existingData));
@@ -115,18 +124,6 @@ const RegisterForm = () => {
         error={!!errors.email}
         helperText={errors.email} 
          />
-        {/* <TextField 
-        sx={{ my: 1 }} 
-        id="outlined-password-input" 
-        label="Password" 
-        type="password" 
-        autoComplete="current-password" 
-        name="password" 
-        value={formData.password} 
-        onChange={(e) => setFormData({ ...formData, password: e.target.value })} 
-        error={!!errors.password}
-        helperText={errors.password} 
-        /> */}
         <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
           <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
           <OutlinedInput

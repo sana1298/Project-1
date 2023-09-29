@@ -8,7 +8,7 @@ const useAuth = () => {
   };
 const Protect = () => {
     const isAuth = useAuth();
-    return isAuth ? <Home/> : <Navigate to="/" />;
+    return(isAuth ? <Home/> : <Navigate to="/" />)
 }
 
 export default Protect
