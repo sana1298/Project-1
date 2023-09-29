@@ -85,7 +85,7 @@ return (
         }}
       >
         <Typography variant='h5'>Register</Typography>
-        <TextField sx={{my:1}} id="outlined-basic" label="Name" variant="outlined" name="userName"  value={formData.userName}  onChange={(e)=>setFormData({...formData,name:e.target.value})} />
+        <TextField sx={{my:1}} id="outlined-basic" label="Name" variant="outlined" name="userName"  value={formData.userName}  onChange={(e)=>setFormData({...formData,userName:e.target.value})} />
         <TextField sx={{my:1}} id="outlined-basic" label="Email" variant="outlined" name="email" value={formData.email} onChange={(e)=>setFormData({...formData,email:e.target.value})} />
         <TextField
         sx={{my:1}}

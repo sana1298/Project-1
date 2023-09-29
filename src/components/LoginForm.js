@@ -79,7 +79,7 @@ const [formData, setFormData] = useState({
         <Typography variant='h5'>Login</Typography>
         <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="logEmail"
           value={formData.logEmail}
-          onChange={(e)=>setFormData({...formData,email:e.target.value})}
+          onChange={(e)=>setFormData({...formData,logEmail:e.target.value})}
           />
         <TextField
           sx={{ my: 1 }}
@@ -89,7 +89,7 @@ const [formData, setFormData] = useState({
           autoComplete="current-password"
           name="logPassword"
           value={formData.logPassword}
-          onChange={(e)=>setFormData({...formData,password:e.target.value})}
+          onChange={(e)=>setFormData({...formData,logPassword:e.target.value})}
         />
         <Button sx={{ my: 1 }} variant="contained" onClick={handleLogin}>Login</Button>
         <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>
