@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { Box, TextField, Button, Typography } from '@mui/material';
+import { Box, TextField, Button, Typography,FormControl,InputLabel,OutlinedInput,InputAdornment,IconButton } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
@@ -7,28 +9,51 @@ import MuiAlert from '@mui/material/Alert';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
+const nameRegex = /^[A-Za-z\s]+$/;
+const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     userName: '',
     email: '',
     password: '',
   });
+
+  const [errors, setErrors] = useState({
+    userName: '',
+    email: '',
+    password: '',
+  });
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
+  const [showPassword, setShowPassword] =useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const nameRegex = /^[A-Za-z\s]+$/;
-  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const handleClick = (e) => {
     e.preventDefault();
+    let newErrors = { userName: '', email: '', password: '' };
+
     if (!nameRegex.test(formData.userName)) {
-      alert('Please enter a valid name');
-    } else if (!emailRegex.test(formData.email)) {
-      alert('Please enter a valid email');
-    } else if (!passwordRegex.test(formData.password)) {
-      alert('Please enter a strong password - Atleast one capital and small letter,one number,one special character... ');
-    } else {
+      newErrors.userName = 'Please enter a valid name';
+    }
+    if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+    if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        'Please enter a strong password ';
+    }
+
+    if (newErrors.userName || newErrors.email || newErrors.password) {
+      setErrors(newErrors);
+    }
+    else {
       const userDetails = {
         userName: formData.userName,
         email: formData.email,
@@ -46,6 +71,7 @@ const RegisterForm = () => {
         email: '',
         password: '',
       });
+      setErrors({ userName: '', email: '', password: '' });
     }
   };
 
@@ -67,9 +93,67 @@ const RegisterForm = () => {
           p: 2
         }}>
         <Typography variant='h5'>Register</Typography>
-        <TextField sx={{ my: 1 }} id="outlined-basic" label="Name" variant="outlined" name="userName" value={formData.userName} onChange={(e) => setFormData({ ...formData, userName: e.target.value })} />
-        <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
-        <TextField sx={{ my: 1 }} id="outlined-password-input" label="Password" type="password" autoComplete="current-password" name="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+        <TextField 
+        sx={{ my: 1 }} 
+        id="outlined-basic" 
+        label="Name" 
+        variant="outlined" 
+        name="userName" 
+        value={formData.userName} 
+        onChange={(e) => setFormData({ ...formData, userName: e.target.value })} 
+        error={!!errors.userName}
+        helperText={errors.userName} 
+        />
+        <TextField 
+        sx={{ my: 1 }} 
+        id="outlined-basic" 
+        label="Email" 
+        variant="outlined" 
+        name="email" 
+        value={formData.email} 
+        onChange={(e) => setFormData({ ...formData, email: e.target.value })} 
+        error={!!errors.email}
+        helperText={errors.email} 
+         />
+        {/* <TextField 
+        sx={{ my: 1 }} 
+        id="outlined-password-input" 
+        label="Password" 
+        type="password" 
+        autoComplete="current-password" 
+        name="password" 
+        value={formData.password} 
+        onChange={(e) => setFormData({ ...formData, password: e.target.value })} 
+        error={!!errors.password}
+        helperText={errors.password} 
+        /> */}
+        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-password"
+            // label="Password" 
+            autoComplete="current-password" 
+            name="password" 
+            value={formData.password} 
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })} 
+            error={!!errors.password}
+            helperText={errors.password}
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Password"
+          />
+        </FormControl>
         <Button sx={{ my: 1 }} variant="contained" onClick={handleClick}>Register</Button>
         <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
@@ -82,4 +166,4 @@ const RegisterForm = () => {
   )
 }
 
-export default RegisterForm
+export default RegisterForm;
