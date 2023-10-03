@@ -1,66 +1,46 @@
 import React, { useState } from 'react'
 import { Box, 
-  TextField, 
+  // TextField, 
   Button, 
   Typography,
-  // FormControl,
-  // InputLabel,
-  // OutlinedInput,
-  // InputAdornment,
-  // IconButton 
 } from '@mui/material';
-// import Visibility from '@mui/icons-material/Visibility';
-// import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import PasswordInput from '../FieldMessage/PasswordField';
+import EmailField from '../FieldMessage/EmailField';
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const LoginForm = () => {
-  // const [formData, setFormData] = useState({
-  //   logEmail: '',
-  //   // logPassword: '',
-  // });
-  const[username,setUsername]=useState('')
+  const[email,setEmail]=useState('')
   const navigate = useNavigate()
   const [success, setSuccess] = useState(false)
   const [pswd, setPswd] = useState()
-  const [error, setError] = useState({pwd:false})
-  const [errors, setErrors] = useState(false); 
+  const [error, setError] = useState({
+    pwd:false,
+    mail:false,
+  })
+  // const [errors, setErrors] = useState(false); 
 
- // const [showPassword, setShowPassword] =useState(false);
-  // const handleClickShowPassword = () => setShowPassword((show) => !show);
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
 
   const handleLogin = () => {
-    // const { logEmail, logPassword } = formData;
-    // const { logEmail } = username;/
-
-    if (!username && !pswd) {
-      setErrors(true);
-      // setErrors({ email: 'Please provide email and password' });
-      // alert('Please provide')
-      return;
-    }
-    else{
-      setErrors(false);
-      // alert('Please')
-    }
-    //  else {
-    //   setErrors({}); 
+    // if (!email && !pswd) {
+    //   setErrors(true);
+    //   return;
+    // }
+    // else{
+    //   setErrors(false);
+    //   // alert('Please')
     // }
 
     const data = JSON.parse(localStorage.getItem('data')) || [];
     console.log(data,"rtyuiop")
-    console.log(username,pswd,"emai,password")
+    console.log(email,pswd,"emai,password")
     const logindetails = data.find((user) => {
-      return user.email === username && user.password === pswd;
+      return user.email === email && user.password === pswd;
     });
 
     console.log()
@@ -75,14 +55,8 @@ const LoginForm = () => {
     // }
     } else {
       setError(true);
-      // alert("not same")
-      // setErrors({ email: 'Invalid email or password' });
     }
-    // setFormData({
-    //   logEmail: '',
-    //   // logPassword: '',
-    // });
-    setUsername('')
+    setEmail('')
     setPswd('')
   };
 
@@ -92,7 +66,7 @@ const LoginForm = () => {
     }
 
     setSuccess(false);
-    setErrors(false);
+    // setErrors(false);
   };
   return (
     <>
@@ -107,51 +81,19 @@ const LoginForm = () => {
         }}
       >
         <Typography variant='h5'>Login</Typography>
-        <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="logEmail"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+        <EmailField
+           value={email}
+           onChange={(e)=>setEmail(e.target.value)} 
+          onBlur={(e, error) =>
+            setError((state) => ({ ...state, mail: error }))}
+        ></EmailField>
+        {/* <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="logEmail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           // error={!!errors.email}
           // helperText={errors.email || ''}
-        />
-        {/* <TextField
-          sx={{ my: 1 }}
-          id="outlined-password-input"
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          name="logPassword"
-          value={formData.logPassword}
-          onChange={(e) => setFormData({ ...formData, logPassword: e.target.value })}
         /> */}
-        {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            // label="Password" 
-            autoComplete="current-password" 
-            name="password" 
-            value={formData.password} 
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })} 
-            error={!!errors.password}
-            helperText={errors.password}
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-          />
-        </FormControl> */}
         <PasswordInput 
-        // value={formData.logPassword} 
         value={pswd}
          onChange={(e)=>setPswd(e.target.value)} 
         onBlur={(e, error) =>
@@ -164,11 +106,11 @@ const LoginForm = () => {
             Successfully LoggedIn!
           </Alert>
         </Snackbar>
-        <Snackbar open={errors} autoHideDuration={3000} onClose={handleClose}>
+        {/* <Snackbar open={error} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
             Please Fill The Field!
           </Alert> 
-        </Snackbar>
+        </Snackbar> */}
         <Typography variant='h6'>Don't have an account?<Link to='/register'>Register</Link></Typography>
       </Box>
     </>
