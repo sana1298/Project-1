@@ -21,26 +21,28 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const LoginForm = () => {
-  const [formData, setFormData] = useState({
-    logEmail: '',
-    // logPassword: '',
-  });
+  // const [formData, setFormData] = useState({
+  //   logEmail: '',
+  //   // logPassword: '',
+  // });
+  const[username,setUsername]=useState('')
   const navigate = useNavigate()
   const [success, setSuccess] = useState(false)
   const [pswd, setPswd] = useState()
   const [error, setError] = useState({pwd:false})
-  // const [showPassword, setShowPassword] =useState(false);
   const [errors, setErrors] = useState(false); 
 
+ // const [showPassword, setShowPassword] =useState(false);
   // const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   // const handleMouseDownPassword = (event) => {
   //   event.preventDefault();
   // };
 
   const handleLogin = () => {
-    const { logEmail, logPassword } = formData;
-    if (!logEmail || !pswd) {
+    // const { logEmail, logPassword } = formData;
+    // const { logEmail } = username;/
+
+    if (!username && !pswd) {
       setErrors(true);
       // setErrors({ email: 'Please provide email and password' });
       // alert('Please provide')
@@ -56,9 +58,9 @@ const LoginForm = () => {
 
     const data = JSON.parse(localStorage.getItem('data')) || [];
     console.log(data,"rtyuiop")
-    console.log(logEmail,pswd,"emai,password")
+    console.log(username,pswd,"emai,password")
     const logindetails = data.find((user) => {
-      return user.email === logEmail && user.password === pswd;
+      return user.email === username && user.password === pswd;
     });
 
     console.log()
@@ -76,10 +78,12 @@ const LoginForm = () => {
       // alert("not same")
       // setErrors({ email: 'Invalid email or password' });
     }
-    setFormData({
-      logEmail: '',
-      logPassword: '',
-    });
+    // setFormData({
+    //   logEmail: '',
+    //   // logPassword: '',
+    // });
+    setUsername('')
+    setPswd('')
   };
 
   const handleClose = (reason) => {
@@ -104,8 +108,8 @@ const LoginForm = () => {
       >
         <Typography variant='h5'>Login</Typography>
         <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="logEmail"
-          value={formData.logEmail}
-          onChange={(e) => setFormData({ ...formData, logEmail: e.target.value })}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           // error={!!errors.email}
           // helperText={errors.email || ''}
         />

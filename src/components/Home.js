@@ -16,7 +16,9 @@ import { Navigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
+// const HeartEmoji = () => <span>&#x2764;&#xFE0F;👀</span>;
 
+const Emoji = () => <span>👀</span>;
 const Home = () => {
   const [datas, setDatas] = useState([]);
   const [searchValues, setSearchValues] = useState("");
@@ -40,6 +42,9 @@ const Home = () => {
   };
 
   const [watchList, dispatchWatchList] = useReducer(watchListReducer, []);
+
+
+  
   const filteredItem = searchValues
     ? datas.filter((item) =>
         item.title.toLowerCase().includes(searchValues.toLowerCase())
@@ -86,6 +91,10 @@ const Home = () => {
       },
     },
   }));
+
+  const isInWatchList = (item) => {
+    return watchList.some((watchedItem) => watchedItem.title === item.title);
+  };
 
   const handleLogout = () => {
     localStorage.setItem("LoggedIn", false);
@@ -156,11 +165,12 @@ const Home = () => {
             {/* <Grid
             // container spacing={1}
             > */}
+            <Typography variant="h6">Movie List</Typography>
               {filteredItem.map((item, index) => (
                 <Box
                   key={index}
                   sx={{
-                    width: 240,
+                    width: 450,
                     display: 'flex',
                   }}
                   my={5}
@@ -173,15 +183,22 @@ const Home = () => {
                     );
                   }}
                 >
+                  <Box>
                   <CardMedia
                     component="img"
-                    height="100"
+                    height="150"
                     image={item.images.jpg.image_url}
                     alt="anime"
                   />
+                  </Box>
+                  <Box sx={{
+                    marginLeft:5
+                  }} >
                   <Typography>Title:{item.title}</Typography>
                   <Typography>Episodes:{item.episodes}</Typography>
                   <Typography>Rating:{item.score}</Typography>
+                  {isInWatchList(item) && <Emoji />}
+                  </Box>
                 </Box>
               ))}
             {/* </Grid> */}
@@ -216,12 +233,12 @@ const Home = () => {
                   }}
                 >
                   <Box sx={{
-                    width: 240,
+                    width: 450,
                     display: 'flex',
                   }} >
                     <CardMedia
                       component="img"
-                      height="100"
+                      height="150"
                       image={item.images.jpg.image_url}
                       alt="anime"
                     />
