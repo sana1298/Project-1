@@ -1,10 +1,20 @@
 import React, { useState } from 'react'
-import { Box, TextField, Button, Typography,FormControl,InputLabel,OutlinedInput,InputAdornment,IconButton } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Box, 
+  TextField, 
+  Button, 
+  Typography,
+  // FormControl,
+  // InputLabel,
+  // OutlinedInput,
+  // InputAdornment,
+  // IconButton 
+} from '@mui/material';
+// import Visibility from '@mui/icons-material/Visibility';
+// import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import PasswordInput from '../FieldMessage/PasswordField';
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -17,41 +27,50 @@ const LoginForm = () => {
   });
   const navigate = useNavigate()
   const [success, setSuccess] = useState(false)
-  // const [error, setError] = useState(false)
-  const [showPassword, setShowPassword] =useState(false);
-  const [errors, setErrors] = useState({}); 
+  const [pswd, setPswd] = useState()
+  const [error, setError] = useState({pwd:false})
+  // const [showPassword, setShowPassword] =useState(false);
+  // const [errors, setErrors] = useState({}); 
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  // const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+  // const handleMouseDownPassword = (event) => {
+  //   event.preventDefault();
+  // };
 
   const handleLogin = () => {
     const { logEmail, logPassword } = formData;
-    if (!logEmail || !logPassword) {
-      // setError(true);
-      setErrors({ email: 'Please provide both email and password' });
-      return;
-    } else {
-      setErrors({}); 
-    }
+    // if (!logEmail || !logPassword) {
+    //   setError(true);
+    //   // setErrors({ email: 'Please provide both email and password' });
+    //   return;
+    // }
+    // else{
+    //   setError(false);
+    // }
+    //  else {
+    //   setErrors({}); 
+    // }
 
     const data = JSON.parse(localStorage.getItem('data')) || [];
+    console.log(data,"rtyuiop")
 
     const logindetails = data.find((user) => {
       return user.email === logEmail && user.password === logPassword;
     });
-
+    console.log()
+    console.log("wsedrftgyhuj")
+   console.log(logindetails,"login da")
     if (logindetails) {
       setSuccess(true);
       setTimeout(() => {
         navigate('/home');
       }, 3000);
       localStorage.setItem('LoggedIn', true);
+    // }
     } else {
-      // setError(true);
-      setErrors({ email: 'Invalid email or password' });
+      setError(true);
+      // setErrors({ email: 'Invalid email or password' });
     }
     setFormData({
       logEmail: '',
@@ -83,8 +102,8 @@ const LoginForm = () => {
         <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="logEmail"
           value={formData.logEmail}
           onChange={(e) => setFormData({ ...formData, logEmail: e.target.value })}
-          error={!!errors.email}
-          helperText={errors.email || ''}
+          // error={!!errors.email}
+          // helperText={errors.email || ''}
         />
         {/* <TextField
           sx={{ my: 1 }}
@@ -96,7 +115,7 @@ const LoginForm = () => {
           value={formData.logPassword}
           onChange={(e) => setFormData({ ...formData, logPassword: e.target.value })}
         /> */}
-        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+        {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
           <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
           <OutlinedInput
             id="outlined-adornment-password"
@@ -122,7 +141,11 @@ const LoginForm = () => {
             }
             label="Password"
           />
-        </FormControl>
+        </FormControl> */}
+        <PasswordInput value={pswd} 
+         onChange={(e)=>setPswd(e.target.value)} 
+        onBlur={(e, error) => setError((state) => ({ ...state, pswd: error }))}
+        />
         <Button sx={{ my: 1 }} variant="contained" onClick={handleLogin}>Login</Button>
         <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
@@ -133,7 +156,7 @@ const LoginForm = () => {
           <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
             Please LogIn correctly!
           </Alert> 
-        </Snackbar>*/}
+        </Snackbar> */}
         <Typography variant='h6'>Don't have an account?<Link to='/register'>Register</Link></Typography>
       </Box>
     </>

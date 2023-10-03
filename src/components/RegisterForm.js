@@ -16,11 +16,7 @@ const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
 const RegisterForm = () => {
-  // const [formData, setFormData] = useState({
-  //   userName: '',
-  //   email: '',
-  //   password: '',
-  // });
+
   const { userData, updateUser } = useUser();
   const [formData, setFormData] = useState(userData);
 
@@ -32,7 +28,7 @@ const RegisterForm = () => {
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
   const [showPassword, setShowPassword] =useState(false);
-  
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
