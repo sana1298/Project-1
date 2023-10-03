@@ -23,14 +23,14 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     logEmail: '',
-    logPassword: '',
+    // logPassword: '',
   });
   const navigate = useNavigate()
   const [success, setSuccess] = useState(false)
   const [pswd, setPswd] = useState()
   const [error, setError] = useState({pwd:false})
   // const [showPassword, setShowPassword] =useState(false);
-  // const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState(false); 
 
   // const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -40,24 +40,27 @@ const LoginForm = () => {
 
   const handleLogin = () => {
     const { logEmail, logPassword } = formData;
-    // if (!logEmail || !logPassword) {
-    //   setError(true);
-    //   // setErrors({ email: 'Please provide both email and password' });
-    //   return;
-    // }
-    // else{
-    //   setError(false);
-    // }
+    if (!logEmail || !pswd) {
+      setErrors(true);
+      // setErrors({ email: 'Please provide email and password' });
+      // alert('Please provide')
+      return;
+    }
+    else{
+      setErrors(false);
+      // alert('Please')
+    }
     //  else {
     //   setErrors({}); 
     // }
 
     const data = JSON.parse(localStorage.getItem('data')) || [];
     console.log(data,"rtyuiop")
-
+    console.log(logEmail,pswd,"emai,password")
     const logindetails = data.find((user) => {
-      return user.email === logEmail && user.password === logPassword;
+      return user.email === logEmail && user.password === pswd;
     });
+
     console.log()
     console.log("wsedrftgyhuj")
    console.log(logindetails,"login da")
@@ -70,6 +73,7 @@ const LoginForm = () => {
     // }
     } else {
       setError(true);
+      // alert("not same")
       // setErrors({ email: 'Invalid email or password' });
     }
     setFormData({
@@ -84,7 +88,7 @@ const LoginForm = () => {
     }
 
     setSuccess(false);
-    // setError(false);
+    setErrors(false);
   };
   return (
     <>
@@ -142,9 +146,13 @@ const LoginForm = () => {
             label="Password"
           />
         </FormControl> */}
-        <PasswordInput value={pswd} 
+        <PasswordInput 
+        // value={formData.logPassword} 
+        value={pswd}
          onChange={(e)=>setPswd(e.target.value)} 
-        onBlur={(e, error) => setError((state) => ({ ...state, pswd: error }))}
+        onBlur={(e, error) =>
+          setError((state) => ({ ...state, pwd: error }))}
+        
         />
         <Button sx={{ my: 1 }} variant="contained" onClick={handleLogin}>Login</Button>
         <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>
@@ -152,11 +160,11 @@ const LoginForm = () => {
             Successfully LoggedIn!
           </Alert>
         </Snackbar>
-        {/* <Snackbar open={error} autoHideDuration={3000} onClose={handleClose}>
+        <Snackbar open={errors} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            Please LogIn correctly!
+            Please Fill The Field!
           </Alert> 
-        </Snackbar> */}
+        </Snackbar>
         <Typography variant='h6'>Don't have an account?<Link to='/register'>Register</Link></Typography>
       </Box>
     </>

@@ -14,8 +14,7 @@ let errMsgs = {
   wrongPwd:
     "Must contain 8 charc, 1 special char, 1 number, 1 small and capital letter",
 };
-let passwordValidation =
-  /^(?=.*[A-Za-z])(?=.*[!@#$%^&*])(?=.*[0-9])[A-Za-z\d!@#$%&*]{8,}$/;
+let passwordValidation =/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 function PasswordInput(props) {
   const [value, setValue] = useState("");
   const [error, setError] = useState(false);
