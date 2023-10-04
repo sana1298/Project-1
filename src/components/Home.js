@@ -14,7 +14,7 @@ import {
   Autocomplete,
 } from "@mui/material";
 // import { styled, alpha } from "@mui/material/styles";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 // import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
@@ -160,29 +160,41 @@ const handleChange=(e,value)=>{
                   onChange={(e) => setSearchValues(e.target.value)}
                 />
               </Search> */}
-               <Autocomplete
-               sx={{
-                width: 250,
-                border: "1px solid blue",
-               }}
+      <Autocomplete
+        sx={{
+          width: 250,
+          border: "1px solid blue",
+         }}
         freeSolo
         id="free-solo-2-demo"
         disableClearable
-        options={filteredItem.map((option) => option.title)}
-        value={searchValues}
-        // onChange={(e) => setSearchValues(e.target.value)}
+        options={datas}
+        getOptionLabel={(option) => option.title}
         onInputChange={handleChange}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Search input"
-            InputProps={{
-              ...params.InputProps,
-              type: 'search',
-            }}
-          />
-        )}
-      />
+        renderOption={(props, option) => (
+          <Link to={`anime/${option.mal_id}`}>
+        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+          
+          <CardMedia
+                    component="img"
+                    sx={{width:50, height:50}}
+                    image={option.images.jpg.small_image_url}
+                    alt="anime"
+                  />{option.title}
+        </Box>
+        </Link>
+      )}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Search Here..."
+          inputProps={{
+            ...params.inputProps,
+            autoComplete: 'new-password',
+          }}
+        />
+      )}
+    />
               <Button
                 sx={{ marginleft: 5 }}
                 variant="contained"
