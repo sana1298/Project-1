@@ -27,15 +27,7 @@ const LoginForm = () => {
 
 
   const handleLogin = () => {
-    // if (!email && !pswd) {
-    //   setErrors(true);
-    //   return;
-    // }
-    // else{
-    //   setErrors(false);
-    //   // alert('Please')
-    // }
-
+    
     const data = JSON.parse(localStorage.getItem('data')) || [];
     console.log(data,"rtyuiop")
     console.log(email,pswd,"emai,password")

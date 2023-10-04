@@ -5,20 +5,24 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  InputBase,
+  // InputBase,
   Button,
   Card,
   CardMedia,
   IconButton,
+  TextField,
+  Autocomplete,
 } from "@mui/material";
-import { styled, alpha } from "@mui/material/styles";
+// import { styled, alpha } from "@mui/material/styles";
 import { Navigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
+// import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import StarIcon from "@mui/icons-material/Star";
 // const HeartEmoji = () => <span>&#x2764;&#xFE0F;👀</span>;
 
-const Emoji = () => <span>👀</span>;
+// const Emoji = () => <span>👀</span>;
 const Home = () => {
   const [datas, setDatas] = useState([]);
   const [searchValues, setSearchValues] = useState("");
@@ -43,54 +47,52 @@ const Home = () => {
 
   const [watchList, dispatchWatchList] = useReducer(watchListReducer, []);
 
-
-  
   const filteredItem = searchValues
     ? datas.filter((item) =>
         item.title.toLowerCase().includes(searchValues.toLowerCase())
       )
     : datas;
 
-  const Search = styled("div")(({ theme }) => ({
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
-      width: "auto",
-    },
-  }));
-  const SearchIconWrapper = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
+  // const Search = styled("div")(({ theme }) => ({
+  //   position: "relative",
+  //   borderRadius: theme.shape.borderRadius,
+  //   backgroundColor: alpha(theme.palette.common.white, 0.15),
+  //   "&:hover": {
+  //     backgroundColor: alpha(theme.palette.common.white, 0.25),
+  //   },
+  //   marginLeft: 0,
+  //   width: "100%",
+  //   [theme.breakpoints.up("sm")]: {
+  //     marginLeft: theme.spacing(1),
+  //     width: "auto",
+  //   },
+  // }));
+  // const SearchIconWrapper = styled("div")(({ theme }) => ({
+  //   padding: theme.spacing(0, 2),
+  //   height: "100%",
+  //   position: "absolute",
+  //   pointerEvents: "none",
+  //   display: "flex",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  // }));
 
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: "inherit",
-    "& .MuiInputBase-input": {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("sm")]: {
-        width: "12ch",
-        "&:focus": {
-          width: "20ch",
-        },
-      },
-    },
-  }));
+  // const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  //   color: "inherit",
+  //   "& .MuiInputBase-input": {
+  //     padding: theme.spacing(1, 1, 1, 0),
+  //     // vertical padding + font size from searchIcon
+  //     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+  //     transition: theme.transitions.create("width"),
+  //     width: "100%",
+  //     [theme.breakpoints.up("sm")]: {
+  //       width: "12ch",
+  //       "&:focus": {
+  //         width: "20ch",
+  //       },
+  //     },
+  //   },
+  // }));
 
   const isInWatchList = (item) => {
     return watchList.some((watchedItem) => watchedItem.title === item.title);
@@ -100,6 +102,14 @@ const Home = () => {
     localStorage.setItem("LoggedIn", false);
     setLoggedIn(false);
   };
+  const handleDoubleClick = (e, item) => {
+    dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
+  };
+
+const handleChange=(e,value)=>{
+  // setSearchValues(e.target.value)
+  console.log(value)
+}
 
   useEffect(() => {
     if (loggedIn) {
@@ -139,7 +149,7 @@ const Home = () => {
               >
                 ANIMIENTATION
               </Typography>
-              <Search>
+              {/* <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
@@ -149,7 +159,30 @@ const Home = () => {
                   value={searchValues}
                   onChange={(e) => setSearchValues(e.target.value)}
                 />
-              </Search>
+              </Search> */}
+               <Autocomplete
+               sx={{
+                width: 250,
+                border: "1px solid blue",
+               }}
+        freeSolo
+        id="free-solo-2-demo"
+        disableClearable
+        options={filteredItem.map((option) => option.title)}
+        value={searchValues}
+        // onChange={(e) => setSearchValues(e.target.value)}
+        onInputChange={handleChange}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search input"
+            InputProps={{
+              ...params.InputProps,
+              type: 'search',
+            }}
+          />
+        )}
+      />
               <Button
                 sx={{ marginleft: 5 }}
                 variant="contained"
@@ -160,47 +193,59 @@ const Home = () => {
             </Toolbar>
           </AppBar>
         </Box>
-        <Box sx={{display:'flex'}} >
+        <Box sx={{ display: "flex" }}>
           <Card>
             {/* <Grid
             // container spacing={1}
             > */}
             <Typography variant="h6">Movie List</Typography>
-              {filteredItem.map((item, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    width: 450,
-                    display: 'flex',
-                  }}
-                  my={5}
-                  mx={4}
-                  draggable
-                  onDragStart={(e) => {
-                    e.dataTransfer.setData(
-                      "application/json",
-                      JSON.stringify(item)
-                    );
-                  }}
-                >
-                  <Box>
+            {filteredItem.map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  width: 450,
+                  display: "flex",
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                }}
+                my={5}
+                mx={4}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData(
+                    "application/json",
+                    JSON.stringify(item)
+                  );
+                }}
+              >
+                <Box>
                   <CardMedia
                     component="img"
-                    height="150"
+                    height="100"
                     image={item.images.jpg.image_url}
                     alt="anime"
                   />
-                  </Box>
-                  <Box sx={{
-                    marginLeft:5
-                  }} >
-                  <Typography>Title:{item.title}</Typography>
-                  <Typography>Episodes:{item.episodes}</Typography>
-                  <Typography>Rating:{item.score}</Typography>
-                  {isInWatchList(item) && <Emoji />}
-                  </Box>
                 </Box>
-              ))}
+                <Box
+                  sx={{
+                    marginLeft: 5,
+                    marginTop:5
+                  }}
+                >
+                  <Typography>Title:{item.title}</Typography>
+                  {/* <Typography>Episodes:{item.episodes}</Typography>
+                  <Typography>Rating:{item.score}</Typography> */}
+                  {isInWatchList(item) ? (
+                    <StarIcon></StarIcon>
+                  ) : (
+                    <StarBorderIcon
+                      onDoubleClick={(e) => handleDoubleClick(e, item)}
+                    >
+                    </StarBorderIcon>
+                  )}
+                </Box>
+              </Box>
+            ))}
             {/* </Grid> */}
           </Card>
 
@@ -232,31 +277,36 @@ const Home = () => {
                     marginBottom: "5px",
                   }}
                 >
-                  <Box sx={{
-                    width: 450,
-                    display: 'flex',
-                  }} >
-                    <CardMedia
-                      component="img"
-                      height="150"
-                      image={item.images.jpg.image_url}
-                      alt="anime"
-                    />
-                    <Typography>Title:{item.title}</Typography>
-                    <Typography>Episodes:{item.episodes}</Typography>
-                    <Typography>Rating:{item.score}</Typography>
-                  </Box>
-
-                  <Button
-                    onClick={() =>
-                      dispatchWatchList({
-                        type: "REMOVE_FROM_WATCH_LIST",
-                        payload: item,
-                      })
-                    }
+                  <Box
+                    sx={{
+                      width: 400,
+                      display: "flex",
+                    }}
                   >
-                    Remove
-                  </Button>
+                    <Box>
+                      <CardMedia
+                        component="img"
+                        height="100"
+                        image={item.images.jpg.image_url}
+                        alt="anime"
+                      />
+                    </Box>
+                    <Box>
+                      <Typography>Title:{item.title}</Typography>
+                      {/* <Typography>Episodes:{item.episodes}</Typography>
+                    <Typography>Rating:{item.score}</Typography> */}
+                    </Box>
+                    <Button
+                      onClick={() =>
+                        dispatchWatchList({
+                          type: "REMOVE_FROM_WATCH_LIST",
+                          payload: item,
+                        })
+                      }
+                    >
+                      Remove
+                    </Button>
+                  </Box>
                 </Box>
               ))}
             </Box>
