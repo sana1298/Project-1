@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { Box, 
-  // TextField, 
+import { Box,
   Button, 
   Typography,
 } from '@mui/material';
@@ -21,10 +20,8 @@ const LoginForm = () => {
   const [pswd, setPswd] = useState()
   const [error, setError] = useState({
     pwd:false,
-    mail:false,
+    // mail:false,
   })
-  // const [errors, setErrors] = useState(false); 
-
 
   const handleLogin = () => {
     
@@ -44,7 +41,6 @@ const LoginForm = () => {
         navigate('/home');
       }, 3000);
       localStorage.setItem('LoggedIn', true);
-    // }
     } else {
       setError(true);
     }
@@ -56,9 +52,7 @@ const LoginForm = () => {
     if (reason === 'clickaway') {
       return;
     }
-
     setSuccess(false);
-    // setErrors(false);
   };
   return (
     <>
@@ -79,18 +73,11 @@ const LoginForm = () => {
           onBlur={(e, error) =>
             setError((state) => ({ ...state, mail: error }))}
         ></EmailField>
-        {/* <TextField sx={{ my: 1 }} id="outlined-basic" label="Email" variant="outlined" name="logEmail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          // error={!!errors.email}
-          // helperText={errors.email || ''}
-        /> */}
         <PasswordInput 
         value={pswd}
          onChange={(e)=>setPswd(e.target.value)} 
         onBlur={(e, error) =>
           setError((state) => ({ ...state, pwd: error }))}
-        
         />
         <Button sx={{ my: 1 }} variant="contained" onClick={handleLogin}>Login</Button>
         <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>
@@ -98,11 +85,6 @@ const LoginForm = () => {
             Successfully LoggedIn!
           </Alert>
         </Snackbar>
-        {/* <Snackbar open={error} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            Please Fill The Field!
-          </Alert> 
-        </Snackbar> */}
         <Typography variant='h6'>Don't have an account?<Link to='/register'>Register</Link></Typography>
       </Box>
     </>

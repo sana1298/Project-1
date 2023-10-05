@@ -18,8 +18,8 @@ const AnimeDetails = () => {
   }, [id]);
   return (
   <>
-    <Typography variant="h4" sx={{
-        color: '#cc600e'
+    <Typography variant="h3" sx={{
+        color: '#de0e07'
     }}>AnimeDetails</Typography>
     <Box sx={{ 
         backgroundColor: "#c1dbd3",
@@ -33,7 +33,7 @@ const AnimeDetails = () => {
             
             width:'500px'
              }}>
-                <Typography variant="h5"><strong style={{color:'darkblue'}}>Title:</strong>{data.title}</Typography>
+                <Typography variant="h4"><strong style={{color:'darkblue'}}>Title:</strong>{data.title}</Typography>
             <Card>
               {data.images && data.images.jpg && data.images.jpg.image_url ? (
                 <CardMedia
@@ -52,13 +52,13 @@ const AnimeDetails = () => {
           }}
           ml={10}
           >
-            <Typography><strong style={{color:'darkblue'}}>Episodes:</strong>{data.episodes}</Typography>
-            <Typography><strong style={{color:'darkblue'}}>Score:</strong>{data.score}</Typography>
-            <Typography><strong style={{color:'darkblue'}}>Type:</strong>{data.type}</Typography>
-            <Typography><strong style={{color:'darkblue'}}>Year:</strong>{data.year}</Typography>
-            <Typography><strong style={{color:'darkblue'}}>Duration:</strong>{data.duration}</Typography>
-            <Typography><strong style={{color:'darkblue'}}>Source:</strong>{data.source}</Typography>
-            <Typography><strong style={{color:'darkblue'}}>Description:</strong>{data.synopsis}</Typography>
+            <Typography><strong style={{color:'darkblue'}}>Episodes:</strong>{data.episodes?data.episodes:''}</Typography>
+            <Typography><strong style={{color:'darkblue'}}>Score:</strong>{data.score?data.score:''}</Typography>
+            <Typography><strong style={{color:'darkblue'}}>Type:</strong>{data.type?data.type:''}</Typography>
+            <Typography><strong style={{color:'darkblue'}}>Year:</strong>{data.year?data.year:''}</Typography>
+            <Typography><strong style={{color:'darkblue'}}>Duration:</strong>{data.duration?data.duration:''}</Typography>
+            <Typography><strong style={{color:'darkblue'}}>Source:</strong>{data.source?data.source:''}</Typography>
+            <Typography><strong style={{color:'darkblue'}}>Description:</strong>{data.synopsis?data.synopsis:''}</Typography>
           </Box>
         </Box>
         {/* <Typography>Day:{data.boardcast.day}</Typography> */}

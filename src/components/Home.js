@@ -13,19 +13,23 @@ import {
   TextField,
   Autocomplete,
 } from "@mui/material";
-// import { styled, alpha } from "@mui/material/styles";
-import { Link, Navigate } from "react-router-dom";
+import { Link,
+   Navigate,
+  //  useSearchParams
+   } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-// import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
-// const HeartEmoji = () => <span>&#x2764;&#xFE0F;👀</span>;
 
-// const Emoji = () => <span>👀</span>;
 const Home = () => {
   const [datas, setDatas] = useState([]);
   const [searchValues, setSearchValues] = useState("");
+  const [values, setValues] = useState([]);
+  // const [searchParams, setSearchParams] = useSearchParams([]);
+
+  // const inputSearch = searchParams.get("id");
+
   // const navigate = useNavigate()
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("LoggedIn") === "true"
@@ -52,48 +56,9 @@ const Home = () => {
         item.title.toLowerCase().includes(searchValues.toLowerCase())
       )
     : datas;
-
-  // const Search = styled("div")(({ theme }) => ({
-  //   position: "relative",
-  //   borderRadius: theme.shape.borderRadius,
-  //   backgroundColor: alpha(theme.palette.common.white, 0.15),
-  //   "&:hover": {
-  //     backgroundColor: alpha(theme.palette.common.white, 0.25),
-  //   },
-  //   marginLeft: 0,
-  //   width: "100%",
-  //   [theme.breakpoints.up("sm")]: {
-  //     marginLeft: theme.spacing(1),
-  //     width: "auto",
-  //   },
-  // }));
-  // const SearchIconWrapper = styled("div")(({ theme }) => ({
-  //   padding: theme.spacing(0, 2),
-  //   height: "100%",
-  //   position: "absolute",
-  //   pointerEvents: "none",
-  //   display: "flex",
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  // }));
-
-  // const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  //   color: "inherit",
-  //   "& .MuiInputBase-input": {
-  //     padding: theme.spacing(1, 1, 1, 0),
-  //     // vertical padding + font size from searchIcon
-  //     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-  //     transition: theme.transitions.create("width"),
-  //     width: "100%",
-  //     [theme.breakpoints.up("sm")]: {
-  //       width: "12ch",
-  //       "&:focus": {
-  //         width: "20ch",
-  //       },
-  //     },
-  //   },
-  // }));
-
+  // const searchFilter = values
+  //   ? datas.filter((currentValue) => currentValue === inputSearch)
+  //   : datas;
   const isInWatchList = (item) => {
     return watchList.some((watchedItem) => watchedItem.title === item.title);
   };
@@ -106,10 +71,19 @@ const Home = () => {
     dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
   };
 
-const handleChange=(e,value)=>{
-  // setSearchValues(e.target.value)
-  console.log(value)
-}
+  const handleChange = (e, value) => {
+    setSearchValues(e.target.value);
+    console.log(value);
+  };
+
+  useEffect(() => {
+    axios
+      .get(`https://api.jikan.moe/v4/anime?s=${searchValues}`)
+      .then((response) => {
+        setValues(response.data.data);
+      })
+      .catch((error) => console.error("Error fetching products:", error));
+  }, [searchValues]);
 
   useEffect(() => {
     if (loggedIn) {
@@ -149,52 +123,54 @@ const handleChange=(e,value)=>{
               >
                 ANIMIENTATION
               </Typography>
-              {/* <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ "aria-label": "search" }}
-                  value={searchValues}
-                  onChange={(e) => setSearchValues(e.target.value)}
-                />
-              </Search> */}
-      <Autocomplete
-        sx={{
-          width: 250,
-          border: "1px solid blue",
-         }}
-        freeSolo
-        id="free-solo-2-demo"
-        disableClearable
-        options={datas}
-        getOptionLabel={(option) => option.title}
-        onInputChange={handleChange}
-        renderOption={(props, option) => (
-          <Link to={`anime/${option.mal_id}`}>
-        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-          
-          <CardMedia
-                    component="img"
-                    sx={{width:50, height:50}}
-                    image={option.images.jpg.small_image_url}
-                    alt="anime"
-                  />{option.title}
-        </Box>
-        </Link>
-      )}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Search Here..."
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: 'new-password',
-          }}
-        />
-      )}
-    />
+
+              <Autocomplete
+                sx={{
+                  width: 250,
+                  border: "1px solid blue",
+                }}
+                freeSolo
+                id="free-solo-2-demo"
+                disableClearable
+                // value={searchValues}
+                // onChange={(e)=>setSearchValues(e.target.value)}
+
+                options={values}
+                // options={searchFilter}
+                getOptionLabel={(option) => option.title}
+                // key={option.mal_id}
+                onInputChange={handleChange}
+                renderOption={(props, option) => (
+                  <Link
+                    to={`anime/${option.mal_id}`}
+                    style={{ color: "black", textDecoration: "none" }}
+                  >
+                    <Box
+                      component="li"
+                      sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                      {...props}
+                    >
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 50, height: 50 }}
+                        image={option.images.jpg.small_image_url}
+                        alt="anime"
+                      />
+                      {option.title}
+                    </Box>
+                  </Link>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Search Here..."
+                    inputProps={{
+                      ...params.inputProps,
+                      autoComplete: "new-password",
+                    }}
+                  />
+                )}
+              />
               <Button
                 sx={{ marginleft: 5 }}
                 variant="contained"
@@ -241,19 +217,16 @@ const handleChange=(e,value)=>{
                 <Box
                   sx={{
                     marginLeft: 5,
-                    marginTop:5
+                    marginTop: 5,
                   }}
                 >
                   <Typography>Title:{item.title}</Typography>
-                  {/* <Typography>Episodes:{item.episodes}</Typography>
-                  <Typography>Rating:{item.score}</Typography> */}
                   {isInWatchList(item) ? (
                     <StarIcon></StarIcon>
                   ) : (
                     <StarBorderIcon
                       onDoubleClick={(e) => handleDoubleClick(e, item)}
-                    >
-                    </StarBorderIcon>
+                    ></StarBorderIcon>
                   )}
                 </Box>
               </Box>
@@ -305,8 +278,6 @@ const handleChange=(e,value)=>{
                     </Box>
                     <Box>
                       <Typography>Title:{item.title}</Typography>
-                      {/* <Typography>Episodes:{item.episodes}</Typography>
-                    <Typography>Rating:{item.score}</Typography> */}
                     </Box>
                     <Button
                       onClick={() =>
