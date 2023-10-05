@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
 import {
   Box,
-  // Grid,
+  Grid,
   AppBar,
   Toolbar,
   Typography,
@@ -13,10 +13,11 @@ import {
   TextField,
   Autocomplete,
 } from "@mui/material";
-import { Link,
-   Navigate,
-  //  useSearchParams
-   } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import axios from "axios";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -26,11 +27,9 @@ const Home = () => {
   const [datas, setDatas] = useState([]);
   const [searchValues, setSearchValues] = useState("");
   const [values, setValues] = useState([]);
-  // const [searchParams, setSearchParams] = useSearchParams([]);
 
-  // const inputSearch = searchParams.get("id");
 
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("LoggedIn") === "true"
   );
@@ -56,9 +55,7 @@ const Home = () => {
         item.title.toLowerCase().includes(searchValues.toLowerCase())
       )
     : datas;
-  // const searchFilter = values
-  //   ? datas.filter((currentValue) => currentValue === inputSearch)
-  //   : datas;
+
   const isInWatchList = (item) => {
     return watchList.some((watchedItem) => watchedItem.title === item.title);
   };
@@ -99,6 +96,13 @@ const Home = () => {
 
   if (!loggedIn) {
     return <Navigate to="/" />;
+  }
+  
+  const handleCardClick=(item) => {
+    // console.log('ertyuiop')
+    // <Navigate to={}/>
+    navigate(`anime/${item.mal_id}`)
+    
   }
   return (
     <>
@@ -296,6 +300,40 @@ const Home = () => {
           </Box>
         </Box>
       </Box>
+      <Card>
+        <Grid
+        container spacing={3}
+        >
+          <Typography variant="h6">Movie List</Typography>
+          {datas.map((item, index) => (
+            <Box
+              key={index}
+              sx={{
+                width: 450,
+                height: 400,
+                display: "flex",
+                border: "1px solid black",
+                borderRadius: "5px",
+              }}
+              my={5}
+              mx={4}
+              onClick={()=>handleCardClick(item)}
+            >
+              <Box>
+                <CardMedia
+                  component="img"
+                  height="100"
+                  image={item.images.jpg.image_url}
+                  alt="anime"
+                />
+                {/* <Link to={`anime/${item.mal_id}`}>Details</Link> */}
+                  <Typography>Title:{item.title}</Typography>
+              </Box>
+            </Box>
+          ))}
+        </Grid>
+      </Card>
+      <Box></Box>
     </>
   );
 };

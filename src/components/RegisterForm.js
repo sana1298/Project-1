@@ -7,7 +7,7 @@ import { Box, TextField, Button, Typography,
 import { Link, useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import { useUser } from '../context/UserContext';
+// import { useUser } from '../context/UserContext';
 import PasswordInput from '../FieldMessage/PasswordField';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -20,8 +20,14 @@ const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$
 
 const RegisterForm = () => {
 
-  const { userData, updateUser } = useUser();
-  const [formData, setFormData] = useState(userData);
+  // const { userData, updateUser } = useUser();
+  // const [formData, setFormData] = useState(userData);
+  const [userData, setUserData] = useState({
+    userName: '',
+    email: '',
+    password: '',
+  });
+
 
   // const [errors, setErrors] = useState({
   //   userName: '',
@@ -60,22 +66,22 @@ const RegisterForm = () => {
     //   newErrors.password =
     //     'Please enter a strong password ';
     // }
-    if ((!passwordRegex.test(formData.password))&&(!nameRegex.test(formData.userName))&&(!emailRegex.test(formData.email))) {
+    if ((!passwordRegex.test(userData.password))&&(!nameRegex.test(userData.userName))&&(!emailRegex.test(userData.email))) {
       setError(true);
     }
 
-    if (formData.userName || formData.email || formData.password) {
+    if (userData.userName || userData.email || userData.password) {
       // setError(true);
       const userDetails = {
-        userName: formData.userName,
-        email: formData.email,
-        password: formData.password,
+        userName: userData.userName,
+        email: userData.email,
+        password: userData.password,
       };
-      updateUser(
-        userDetails.userName,
-        userDetails.email,
-        userDetails.password
-      );
+    //  const updateUser=(
+    //     userDetails.userName,
+    //     userDetails.email,
+    //     userDetails.password
+    //   );
       const existingData = JSON.parse(localStorage.getItem("data")) || [];
       existingData.push(userDetails);
       localStorage.setItem("data", JSON.stringify(existingData));
@@ -83,7 +89,7 @@ const RegisterForm = () => {
       setTimeout(() => {
         navigate('/')
       }, 2000)
-      setFormData({
+      userData({
         userName: '',
         email: '',
         password: '',
@@ -114,7 +120,8 @@ const RegisterForm = () => {
     //     password: '',
     //   });
     //   setError({ userName: '', email: '', password: '' });
-    // } setError(true);
+     setError(true);
+
 
   };
   }
@@ -142,8 +149,8 @@ const RegisterForm = () => {
         label="Name" 
         variant="outlined" 
         name="userName" 
-        value={formData.userName} 
-        onChange={(e) => setFormData({ ...formData, userName: e.target.value })} 
+        value={userData.userName} 
+        onChange={(e) => setUserData({ ...userData, userName: e.target.value })} 
         // error={!!errors.userName}
         // helperText={errors.userName} 
         />
@@ -153,8 +160,8 @@ const RegisterForm = () => {
         label="Email" 
         variant="outlined" 
         name="email" 
-        value={formData.email} 
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })} 
+        value={userData.email} 
+        onChange={(e) => setUserData({ ...userData, email: e.target.value })} 
         // error={!!errors.email}
         // helperText={errors.email} 
          />
