@@ -22,9 +22,10 @@ const LoginForm = () => {
     pwd:false,
     // mail:false,
   })
+  const [errors, setErrors] = useState(false)
+
 
   const handleLogin = () => {
-    
     const data = JSON.parse(localStorage.getItem('data')) || [];
     console.log(data,"rtyuiop")
     console.log(email,pswd,"emai,password")
@@ -32,9 +33,7 @@ const LoginForm = () => {
       return user.email === email && user.password === pswd;
     });
 
-    console.log()
-    console.log("wsedrftgyhuj")
-   console.log(logindetails,"login da")
+   console.log(logindetails,"login")
     if (logindetails) {
       setSuccess(true);
       setTimeout(() => {
@@ -43,6 +42,10 @@ const LoginForm = () => {
       localStorage.setItem('LoggedIn', true);
     } else {
       setError(true);
+
+    }
+    if(email==='' && pswd==='') {
+      setErrors(true)
     }
     setEmail('')
     setPswd('')
@@ -53,6 +56,7 @@ const LoginForm = () => {
       return;
     }
     setSuccess(false);
+    setErrors(false)
   };
   return (
     <>
@@ -83,6 +87,11 @@ const LoginForm = () => {
         <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
             Successfully LoggedIn!
+          </Alert>
+        </Snackbar>
+        <Snackbar open={errors} autoHideDuration={3000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+           LoggedIn Failed!
           </Alert>
         </Snackbar>
         <Typography variant='h6'>Don't have an account?<Link to='/register'>Register</Link></Typography>

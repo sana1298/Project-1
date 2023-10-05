@@ -13,11 +13,7 @@ import {
   TextField,
   Autocomplete,
 } from "@mui/material";
-import {
-  Link,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import axios from "axios";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -28,8 +24,7 @@ const Home = () => {
   const [searchValues, setSearchValues] = useState("");
   const [values, setValues] = useState([]);
 
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("LoggedIn") === "true"
   );
@@ -97,13 +92,12 @@ const Home = () => {
   if (!loggedIn) {
     return <Navigate to="/" />;
   }
-  
-  const handleCardClick=(item) => {
+
+  const handleCardClick = (item) => {
     // console.log('ertyuiop')
     // <Navigate to={}/>
-    navigate(`anime/${item.mal_id}`)
-    
-  }
+    navigate(`anime/${item.mal_id}`);
+  };
   return (
     <>
       <Box>
@@ -238,7 +232,11 @@ const Home = () => {
             {/* </Grid> */}
           </Card>
 
-          <Box>
+          <Box sx={{
+                    width:"600px",
+                    height:"500px",
+                    marginLeft:'60px',
+          }}>
             <Typography variant="h6">Watch List</Typography>
             <Box
               onDrop={(e) => {
@@ -249,7 +247,7 @@ const Home = () => {
                 dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
               }}
               onDragOver={(e) => e.preventDefault()}
-              style={{
+              sx={{
                 border: "1px solid #ccc",
                 padding: "10px",
                 minHeight: "100px",
@@ -259,7 +257,7 @@ const Home = () => {
               {watchList.map((item, index) => (
                 <Box
                   key={index}
-                  style={{
+                  sx={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
@@ -301,34 +299,56 @@ const Home = () => {
         </Box>
       </Box>
       <Card>
-        <Grid
-        container spacing={3}
-        >
+        <Grid container spacing={3}>
           <Typography variant="h6">Movie List</Typography>
           {datas.map((item, index) => (
             <Box
               key={index}
               sx={{
-                width: 450,
-                height: 400,
-                display: "flex",
+                width: 350,
+                height: 500,
+                // display: "flex",
                 border: "1px solid black",
                 borderRadius: "5px",
               }}
               my={5}
               mx={4}
-              onClick={()=>handleCardClick(item)}
+              onClick={() => handleCardClick(item)}
             >
-              <Box>
+              {/* <Box> */}
                 <CardMedia
                   component="img"
-                  height="100"
+                  height="300"
+                  width='100'
                   image={item.images.jpg.image_url}
                   alt="anime"
                 />
                 {/* <Link to={`anime/${item.mal_id}`}>Details</Link> */}
-                  <Typography>Title:{item.title}</Typography>
-              </Box>
+                <Typography variant="h5">
+                  <strong style={{ color: "darkblue" }}>Title:</strong>
+                  {item.title}
+                </Typography>
+                <Typography>
+                  <strong style={{ color: "darkblue" }}>Episodes:</strong>
+                  {item.episodes ? item.episodes : ""}
+                </Typography>
+                <Typography>
+                  <strong style={{ color: "darkblue" }}>Score:</strong>
+                  {item.score ? item.score : ""}
+                </Typography>
+                <Typography>
+                  <strong style={{ color: "darkblue" }}>Type:</strong>
+                  {item.type ? item.type : ""}
+                </Typography>
+                <Typography>
+                  <strong style={{ color: "darkblue" }}>Year:</strong>
+                  {item.year ? item.year : ""}
+                </Typography>
+                <Typography>
+                  <strong style={{ color: "darkblue" }}>Duration:</strong>
+                  {item.duration ? item.duration : ""}
+                </Typography>
+              {/* </Box> */}
             </Box>
           ))}
         </Grid>

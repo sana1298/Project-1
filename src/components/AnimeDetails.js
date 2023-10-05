@@ -33,7 +33,7 @@ const AnimeDetails = () => {
             
             width:'500px'
              }}>
-                <Typography variant="h4"><strong style={{color:'darkblue'}}>Title:</strong>{data.title}</Typography>
+                <Typography variant="h6"><strong style={{color:'darkblue'}}>Title:</strong>{data.title}</Typography>
             <Card>
               {data.images && data.images.jpg && data.images.jpg.image_url ? (
                 <CardMedia
@@ -61,8 +61,6 @@ const AnimeDetails = () => {
             <Typography><strong style={{color:'darkblue'}}>Description:</strong>{data.synopsis?data.synopsis:''}</Typography>
           </Box>
         </Box>
-        {/* <Typography>Day:{data.boardcast.day}</Typography> */}
-        {/* <Typography>{data.genres[0].name}</Typography> */}
       </Box>
     </Box>
     </>
