@@ -17,10 +17,10 @@ const LoginForm = () => {
   const[email,setEmail]=useState('')
   const navigate = useNavigate()
   const [success, setSuccess] = useState(false)
-  const [pswd, setPswd] = useState()
+  const [pswd, setPswd] = useState('')
   const [error, setError] = useState({
     pwd:false,
-    // mail:false,
+    mail:false,
   })
   const [errors, setErrors] = useState(false)
 

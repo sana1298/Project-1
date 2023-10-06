@@ -70,7 +70,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get(`https://api.jikan.moe/v4/anime?s=${searchValues}`)
+      .get(`https://api.jikan.moe/v4/anime?q=${searchValues}`)
       .then((response) => {
         setValues(response.data.data);
       })

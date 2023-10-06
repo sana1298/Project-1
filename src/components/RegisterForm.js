@@ -9,6 +9,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 // import { useUser } from '../context/UserContext';
 import PasswordInput from '../FieldMessage/PasswordField';
+import EmailField from '../FieldMessage/EmailField';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -19,23 +20,19 @@ const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
 const RegisterForm = () => {
-
-  const [userData, setUserData] = useState({
-    userName: '',
-    email: '',
-    password: '',
-  });
+const[userName,setUserName]=useState('')
+  const[email,setEmail]=useState('')
   const [pswd, setPswd] = useState()
   const [error, setError] = useState({
     pwd:false,
-    // mail:false,
+    mail:false,
   })
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
 
   const handleClick = (e) => {
     e.preventDefault();
-    if ((!passwordRegex.test(userData.password))&&(!nameRegex.test(userData.userName))&&(!emailRegex.test(userData.email))) {
+    if ((!nameRegex.test(userName))&&(!emailRegex.test(email))&&(!passwordRegex.test(pswd))) {
       setError(true);
     }
 
@@ -45,11 +42,6 @@ const RegisterForm = () => {
         email: userData.email,
         password: pswd
       };
-    //  const updateUser=(
-    //     userDetails.userName,
-    //     userDetails.email,
-    //     userDetails.password
-    //   );
       const existingData = JSON.parse(localStorage.getItem("data")) || [];
       existingData.push(userDetails);
       localStorage.setItem("data", JSON.stringify(existingData));
@@ -60,16 +52,12 @@ const RegisterForm = () => {
       setUserData({
         userName: '',
         email: '',
-        password: '',
+        // password: '',
       });
       setError({ userName: '', email: '', password: '' });
     }
     else {
-
-    // else(userData.userName || userData.email || userData.password) {
      setError(true);
-
-
   };
   }
   const handleClose = (reason) => {
@@ -96,10 +84,10 @@ const RegisterForm = () => {
         label="Name" 
         variant="outlined" 
         name="userName" 
-        value={userData.userName} 
-        onChange={(e) => setUserData({ ...userData, userName: e.target.value })} 
+        value={userName} 
+        onChange={(e) => setUserName({ ...userName, userName: e.target.value })} 
         />
-        <TextField 
+        {/* <TextField 
         sx={{ my: 1 }} 
         id="outlined-basic" 
         label="Email" 
@@ -107,7 +95,13 @@ const RegisterForm = () => {
         name="email" 
         value={userData.email} 
         onChange={(e) => setUserData({ ...userData, email: e.target.value })} 
-         />
+         /> */}
+          <EmailField
+           value={email}
+           onChange={(e)=>setEmail(e.target.value)} 
+          onBlur={(e, error) =>
+            setError((state) => ({ ...state, mail: error }))}
+        ></EmailField>
           <PasswordInput 
         value={pswd}
          onChange={(e)=>setPswd(e.target.value)} 
