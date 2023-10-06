@@ -7,16 +7,16 @@ import {
   Typography,
   // InputBase,
   Button,
-  Card,
+  // Card,
   CardMedia,
   IconButton,
   TextField,
   Autocomplete,
   CircularProgress,
+  Stack,
+  Pagination,
 } from "@mui/material";
-import { Link, Navigate, 
-  useNavigate
- } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import axios from "axios";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -28,8 +28,10 @@ const Home = () => {
   const [values, setValues] = useState([]);
   const [error, setError] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pageSearch, setPageSearch] = useState(1);
+  const [searchCount, setSearchCount] = useState('')
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("LoggedIn") === "true"
   );
@@ -67,16 +69,20 @@ const Home = () => {
   const handleDoubleClick = (e, item) => {
     // dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
     e.preventDefault();
-      if (isInWatchList(item)) {
-        dispatchWatchList({ type: "REMOVE_FROM_WATCH_LIST", payload: item });
-      } else {
-        dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
-      }
+    if (isInWatchList(item)) {
+      dispatchWatchList({ type: "REMOVE_FROM_WATCH_LIST", payload: item });
+    } else {
+      dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
+    }
   };
 
   const handleChange = (e, value) => {
     setSearchValues(e.target.value);
     console.log(value);
+  };
+  const handlePageChange = (e, item) => {
+    console.log(item.page);
+    setPageSearch(item);
   };
 
   useEffect(() => {
@@ -90,27 +96,27 @@ const Home = () => {
 
   useEffect(() => {
     if (loggedIn) {
-      // setTimeout(() => {
       axios
-        .get("https://api.jikan.moe/v4/anime")
+        .get(`https://api.jikan.moe/v4/anime?page=${pageSearch}`)
         .then((response) => {
           setDatas(response.data.data);
+          // setPageSearch(response.data.pagination)
+        setSearchCount(response.data.pagination)
           console.log(response.data.data);
           setLoading(false);
         })
         // .catch((error) => console.error("Error fetching products:", error.message));
         .catch((error) => setError(error.message));
-      // }, 2000);
     }
-  }, [loggedIn]);
+  }, [loggedIn,pageSearch]);
 
   if (!loggedIn) {
     return <Navigate to="/" />;
   }
 
-  const handleCardClick = (e,item) => {
-    navigate(`anime/${item.mal_id}`);
-  };
+  // const handleCardClick = (e, item) => {
+  //   navigate(`anime/${item.mal_id}`);
+  // };
   return (
     <>
       <Box>
@@ -188,67 +194,85 @@ const Home = () => {
             </Toolbar>
           </AppBar>
         </Box>
-        {loading ?(
-        <Box
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
-         >
-      <CircularProgress />
-    </Box>):('')}
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          ""
+        )}
         <Box sx={{ display: "flex" }}>
-          <Card>
-            {/* <Grid
-            // container spacing={1}
-            > */}
+          <Box>
             <Typography variant="h6">Movie List</Typography>
             <Typography variant="h6">{error}</Typography>
-            {filteredItem.map((item, index) => (
-              <Box
-                key={index}
-                sx={{
-                  width: 450,
-                  display: "flex",
-                  border: "1px solid black",
-                  borderRadius: "5px",
-                }}
-                my={5}
-                mx={4}
-                onClick={(e) => handleCardClick(e, item)}
-                // onDoubleClick={(e) => handleDoubleClick(e, item)}
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData(
-                    "application/json",
-                    JSON.stringify(item)
-                  );
-                }}
-              >
-                <Box>
-                  <CardMedia
-                    component="img"
-                    height="100"
-                    image={item.images.jpg.image_url}
-                    alt="anime"
-                  />
-                </Box>
+            <Box sx={{ height: 300 }}>
+              {filteredItem.map((item, index) => (
                 <Box
+                  key={index}
                   sx={{
-                    marginLeft: 5,
-                    marginTop: 5,
+                    width: 450,
+                    display: "flex",
+                    border: "1px solid black",
+                    borderRadius: "5px",
+                  }}
+                  my={5}
+                  mx={4}
+                  // onClick={(e) => handleCardClick(e, item)}
+                  onDoubleClick={(e) => handleDoubleClick(e, item)}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData(
+                      "application/json",
+                      JSON.stringify(item)
+                    );
                   }}
                 >
-                  <Typography>Title:{item.title}</Typography>
-                    {isInWatchList(item) ? (
-                      <StarIcon></StarIcon>
-                    ) : (
-                      <StarBorderIcon
-                        onDoubleClick={(e) => handleDoubleClick(e, item)}
-                      ></StarBorderIcon>
-                    )}
+                  <Box>
+                    <CardMedia
+                      component="img"
+                      height="100"
+                      image={item.images.jpg.image_url}
+                      alt="anime"
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      marginLeft: 5,
+                      marginTop: 5,
+                    }}
+                  >
+                    <Typography>Title:{item.title}</Typography>
+                    <Box>
+                      {isInWatchList(item) ? (
+                        <StarIcon sx={{ cursor: "pointer" }}></StarIcon>
+                      ) : (
+                        <StarBorderIcon
+                          sx={{ cursor: "pointer" }}
+                          onDoubleClick={(e) => handleDoubleClick(e, item)}
+                        ></StarBorderIcon>
+                      )}
+                    </Box>
+                  </Box>
                 </Box>
-              </Box>
-            ))}
-            {/* </Grid> */}
-          </Card>
+              ))}
+              
+              <Stack spacing={2}>
+                <Typography>Page: {pageSearch}</Typography>
+                <Pagination
+                  count={searchCount.last_visible_page}
+                  page={pageSearch}
+                  onChange={handlePageChange}
+                />
+              </Stack>
+            </Box>
+          </Box>
 
           <Box
             sx={{

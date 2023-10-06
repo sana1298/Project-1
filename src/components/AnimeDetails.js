@@ -12,7 +12,6 @@ const AnimeDetails = () => {
 
 
   useEffect(() => {
-    // setTimeout(() => {
     axios
       .get(`https://api.jikan.moe/v4/anime/${id}`)
       .then((response) => {
@@ -22,7 +21,6 @@ const AnimeDetails = () => {
       })
       // .catch((error) => console.error("Error fetching products:", error));
       .catch((error) => setError(error.message));
-    // }, 2000);
   }, [id]);
   return (
   <>
