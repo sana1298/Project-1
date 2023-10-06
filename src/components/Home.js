@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
 import {
   Box,
-  Grid,
+  // Grid,
   AppBar,
   Toolbar,
   Typography,
@@ -12,8 +12,11 @@ import {
   IconButton,
   TextField,
   Autocomplete,
+  CircularProgress,
 } from "@mui/material";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, 
+  useNavigate
+ } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import axios from "axios";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -23,6 +26,8 @@ const Home = () => {
   const [datas, setDatas] = useState([]);
   const [searchValues, setSearchValues] = useState("");
   const [values, setValues] = useState([]);
+  const [error, setError] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(
@@ -60,7 +65,13 @@ const Home = () => {
     setLoggedIn(false);
   };
   const handleDoubleClick = (e, item) => {
-    dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
+    // dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
+    e.preventDefault();
+      if (isInWatchList(item)) {
+        dispatchWatchList({ type: "REMOVE_FROM_WATCH_LIST", payload: item });
+      } else {
+        dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
+      }
   };
 
   const handleChange = (e, value) => {
@@ -79,13 +90,17 @@ const Home = () => {
 
   useEffect(() => {
     if (loggedIn) {
+      // setTimeout(() => {
       axios
         .get("https://api.jikan.moe/v4/anime")
         .then((response) => {
           setDatas(response.data.data);
           console.log(response.data.data);
+          setLoading(false);
         })
-        .catch((error) => console.error("Error fetching products:", error));
+        // .catch((error) => console.error("Error fetching products:", error.message));
+        .catch((error) => setError(error.message));
+      // }, 2000);
     }
   }, [loggedIn]);
 
@@ -93,9 +108,7 @@ const Home = () => {
     return <Navigate to="/" />;
   }
 
-  const handleCardClick = (item) => {
-    // console.log('ertyuiop')
-    // <Navigate to={}/>
+  const handleCardClick = (e,item) => {
     navigate(`anime/${item.mal_id}`);
   };
   return (
@@ -119,7 +132,7 @@ const Home = () => {
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
               >
-                ANIMIENTATION
+                ANIMATION
               </Typography>
 
               <Autocomplete
@@ -130,13 +143,9 @@ const Home = () => {
                 freeSolo
                 id="free-solo-2-demo"
                 disableClearable
-                // value={searchValues}
-                // onChange={(e)=>setSearchValues(e.target.value)}
-
                 options={values}
                 // options={searchFilter}
                 getOptionLabel={(option) => option.title}
-                // key={option.mal_id}
                 onInputChange={handleChange}
                 renderOption={(props, option) => (
                   <Link
@@ -179,12 +188,19 @@ const Home = () => {
             </Toolbar>
           </AppBar>
         </Box>
+        {loading ?(
+        <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+         >
+      <CircularProgress />
+    </Box>):('')}
         <Box sx={{ display: "flex" }}>
           <Card>
             {/* <Grid
             // container spacing={1}
             > */}
             <Typography variant="h6">Movie List</Typography>
+            <Typography variant="h6">{error}</Typography>
             {filteredItem.map((item, index) => (
               <Box
                 key={index}
@@ -196,6 +212,8 @@ const Home = () => {
                 }}
                 my={5}
                 mx={4}
+                onClick={(e) => handleCardClick(e, item)}
+                // onDoubleClick={(e) => handleDoubleClick(e, item)}
                 draggable
                 onDragStart={(e) => {
                   e.dataTransfer.setData(
@@ -219,24 +237,26 @@ const Home = () => {
                   }}
                 >
                   <Typography>Title:{item.title}</Typography>
-                  {isInWatchList(item) ? (
-                    <StarIcon></StarIcon>
-                  ) : (
-                    <StarBorderIcon
-                      onDoubleClick={(e) => handleDoubleClick(e, item)}
-                    ></StarBorderIcon>
-                  )}
+                    {isInWatchList(item) ? (
+                      <StarIcon></StarIcon>
+                    ) : (
+                      <StarBorderIcon
+                        onDoubleClick={(e) => handleDoubleClick(e, item)}
+                      ></StarBorderIcon>
+                    )}
                 </Box>
               </Box>
             ))}
             {/* </Grid> */}
           </Card>
 
-          <Box sx={{
-                    width:"600px",
-                    height:"500px",
-                    marginLeft:'60px',
-          }}>
+          <Box
+            sx={{
+              width: "600px",
+              height: "500px",
+              marginLeft: "60px",
+            }}
+          >
             <Typography variant="h6">Watch List</Typography>
             <Box
               onDrop={(e) => {
@@ -298,62 +318,6 @@ const Home = () => {
           </Box>
         </Box>
       </Box>
-      <Card>
-        <Grid container spacing={3}>
-          <Typography variant="h6">Movie List</Typography>
-          {datas.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                width: 350,
-                height: 500,
-                // display: "flex",
-                border: "1px solid black",
-                borderRadius: "5px",
-              }}
-              my={5}
-              mx={4}
-              onClick={() => handleCardClick(item)}
-            >
-              {/* <Box> */}
-                <CardMedia
-                  component="img"
-                  height="300"
-                  width='100'
-                  image={item.images.jpg.image_url}
-                  alt="anime"
-                />
-                {/* <Link to={`anime/${item.mal_id}`}>Details</Link> */}
-                <Typography variant="h5">
-                  <strong style={{ color: "darkblue" }}>Title:</strong>
-                  {item.title}
-                </Typography>
-                <Typography>
-                  <strong style={{ color: "darkblue" }}>Episodes:</strong>
-                  {item.episodes ? item.episodes : ""}
-                </Typography>
-                <Typography>
-                  <strong style={{ color: "darkblue" }}>Score:</strong>
-                  {item.score ? item.score : ""}
-                </Typography>
-                <Typography>
-                  <strong style={{ color: "darkblue" }}>Type:</strong>
-                  {item.type ? item.type : ""}
-                </Typography>
-                <Typography>
-                  <strong style={{ color: "darkblue" }}>Year:</strong>
-                  {item.year ? item.year : ""}
-                </Typography>
-                <Typography>
-                  <strong style={{ color: "darkblue" }}>Duration:</strong>
-                  {item.duration ? item.duration : ""}
-                </Typography>
-              {/* </Box> */}
-            </Box>
-          ))}
-        </Grid>
-      </Card>
-      <Box></Box>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { Box, Card, CardMedia, Typography } from "@mui/material";
+import { Box, Card, CardMedia, CircularProgress, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
@@ -7,20 +7,35 @@ import { useParams } from "react-router-dom";
 const AnimeDetails = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
+  const[error,setError] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
   useEffect(() => {
+    // setTimeout(() => {
     axios
       .get(`https://api.jikan.moe/v4/anime/${id}`)
       .then((response) => {
         setData(response.data.data);
         console.log(response.data.data);
+        setLoading(false);
       })
-      .catch((error) => console.error("Error fetching products:", error));
+      // .catch((error) => console.error("Error fetching products:", error));
+      .catch((error) => setError(error.message));
+    // }, 2000);
   }, [id]);
   return (
   <>
+  {loading ?(
+                  <Box
+                  sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+                   >
+                <CircularProgress />
+              </Box>):('')}
     <Typography variant="h3" sx={{
         color: '#de0e07'
     }}>AnimeDetails</Typography>
+            <Typography variant="h6">{error}</Typography>
     <Box sx={{ 
         backgroundColor: "#c1dbd3",
         padding:'20px',

@@ -46,9 +46,10 @@ const LoginForm = () => {
     }
     if(email==='' && pswd==='') {
       setErrors(true)
-    }
+    }else{
     setEmail('')
     setPswd('')
+  }
   };
 
   const handleClose = (reason) => {
