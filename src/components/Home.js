@@ -15,8 +15,13 @@ import {
   CircularProgress,
   Stack,
   Pagination,
+  Skeleton,
 } from "@mui/material";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  //  useNavigate
+} from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import axios from "axios";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -28,8 +33,9 @@ const Home = () => {
   const [values, setValues] = useState([]);
   const [error, setError] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [load, setLoad] = useState(true);
   const [pageSearch, setPageSearch] = useState(1);
-  const [searchCount, setSearchCount] = useState('')
+  const [searchCount, setSearchCount] = useState("");
 
   // const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(
@@ -86,12 +92,17 @@ const Home = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`https://api.jikan.moe/v4/anime?q=${searchValues}`)
-      .then((response) => {
-        setValues(response.data.data);
-      })
-      .catch((error) => console.error("Error fetching products:", error));
+    let timer = setTimeout(() => {
+      axios
+        .get(`https://api.jikan.moe/v4/anime?q=${searchValues}`)
+        .then((response) => {
+          setValues(response.data.data);
+        })
+        .catch((error) => console.error("Error fetching products:", error));
+    }, 3000);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [searchValues]);
 
   useEffect(() => {
@@ -101,14 +112,15 @@ const Home = () => {
         .then((response) => {
           setDatas(response.data.data);
           // setPageSearch(response.data.pagination)
-        setSearchCount(response.data.pagination)
+          setSearchCount(response.data.pagination);
           console.log(response.data.data);
           setLoading(false);
+          setLoad(false);
         })
         // .catch((error) => console.error("Error fetching products:", error.message));
         .catch((error) => setError(error.message));
     }
-  }, [loggedIn,pageSearch]);
+  }, [loggedIn, pageSearch]);
 
   if (!loggedIn) {
     return <Navigate to="/" />;
@@ -148,6 +160,7 @@ const Home = () => {
                 }}
                 freeSolo
                 id="free-solo-2-demo"
+                // key={id}
                 disableClearable
                 options={values}
                 // options={searchFilter}
@@ -194,7 +207,7 @@ const Home = () => {
             </Toolbar>
           </AppBar>
         </Box>
-        {loading ? (
+        {load ? (
           <Box
             sx={{
               display: "flex",
@@ -212,57 +225,140 @@ const Home = () => {
           <Box>
             <Typography variant="h6">Movie List</Typography>
             <Typography variant="h6">{error}</Typography>
-            <Box sx={{ height: 300 }}>
-              {filteredItem.map((item, index) => (
+            <Box>
+              {loading ? (
                 <Box
-                  key={index}
                   sx={{
                     width: 450,
-                    display: "flex",
+                    // display: "flex",
                     border: "1px solid black",
                     borderRadius: "5px",
-                  }}
-                  my={5}
-                  mx={4}
-                  // onClick={(e) => handleCardClick(e, item)}
-                  onDoubleClick={(e) => handleDoubleClick(e, item)}
-                  draggable
-                  onDragStart={(e) => {
-                    e.dataTransfer.setData(
-                      "application/json",
-                      JSON.stringify(item)
-                    );
+                    height: 500,
+                    mt: 5,
+                    ml: 5,
                   }}
                 >
-                  <Box>
-                    <CardMedia
-                      component="img"
-                      height="100"
-                      image={item.images.jpg.image_url}
-                      alt="anime"
+                  <MyLoad />
+                  <MyLoad sx={{ marginTop: 5 }} />
+                  <MyLoad />
+                  {/* <Stack spacing={1}>
+                    <Skeleton
+                      variant="rectangular"
+                      sx={{
+                        width: 450,
+                        display: "flex",
+                        border: "1px solid black",
+                        borderRadius: "5px", 
+                        height: 100,
+                        mt: 5,
+                        ml: 5,
+                      }}
+                      animation="wave"
                     />
-                  </Box>
-                  <Box
-                    sx={{
-                      marginLeft: 5,
-                      marginTop: 5,
-                    }}
-                  >
-                    <Typography>Title:{item.title}</Typography>
-                    <Box>
-                      {isInWatchList(item) ? (
-                        <StarIcon sx={{ cursor: "pointer" }}></StarIcon>
-                      ) : (
-                        <StarBorderIcon
-                          sx={{ cursor: "pointer" }}
-                          onDoubleClick={(e) => handleDoubleClick(e, item)}
-                        ></StarBorderIcon>
-                      )}
-                    </Box>
-                  </Box>
+                  </Stack>
+                  <Stack spacing={1}>
+                    <Skeleton
+                      variant="rectangular"
+                      sx={{
+                        width: 450,
+                        display: "flex",
+                        border: "1px solid black",
+                        borderRadius: "5px",
+                        height: 100,
+                        mt: 5,
+                        ml: 5,
+                      }}
+                      animation="wave"
+                    />
+                  </Stack>
+                  <Stack spacing={1}>
+                    <Skeleton
+                      variant="rectangular"
+                      sx={{
+                        width: 450,
+                        display: "flex",
+                        border: "1px solid black",
+                        borderRadius: "5px",
+                        height: 100,
+                        mt: 5,
+                        ml: 5,
+                      }}
+                      animation="wave"
+                    />
+                  </Stack> */}
                 </Box>
-              ))}
-              
+              ) : (
+                <Box
+                  sx={{
+                    height: 500,
+                    overflowY: "scroll",
+                  }}
+                >
+                  {filteredItem.map((item, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        width: 450,
+                        // backgroundColor: "blue",
+                        display: "flex",
+                        border: "1px solid black",
+                        borderRadius: "5px",
+                        mt: 5,
+                        ml: 5,
+                      }}
+                      // onClick={(e) => handleCardClick(e, item)}
+                      onDoubleClick={(e) => handleDoubleClick(e, item)}
+                      draggable
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData(
+                          "application/json",
+                          JSON.stringify(item)
+                        );
+                      }}
+                    >
+                      {/* {loading ? (
+                <Box
+                  sx={{
+                    width: 450,
+                    // display: "flex",
+                    border: "1px solid black",
+                    borderRadius: "5px",
+                    height: 500,
+                    mt: 5,
+                    ml: 5,
+                  }}
+                ><MyLoad /> */}
+                      <Box>
+                        <CardMedia
+                          component="img"
+                          height="100"
+                          image={item.images.jpg.image_url}
+                          alt="anime"
+                        />
+                      </Box>
+                      <Box
+                        sx={{
+                          marginLeft: 5,
+                          marginTop: 5,
+                        }}
+                      >
+                        <Typography>Title:{item.title}</Typography>
+                        <Box>
+                          {isInWatchList(item) ? (
+                            <StarIcon sx={{ cursor: "pointer" }}></StarIcon>
+                          ) : (
+                            <StarBorderIcon
+                              sx={{ cursor: "pointer" }}
+                              onDoubleClick={(e) => handleDoubleClick(e, item)}
+                            ></StarBorderIcon>
+                          )}
+                        </Box>
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+
               <Stack spacing={2}>
                 <Typography>Page: {pageSearch}</Typography>
                 <Pagination
@@ -347,3 +443,25 @@ const Home = () => {
 };
 
 export default Home;
+
+function MyLoad() {
+  return (
+    <>
+      <Stack spacing={1}>
+        <Skeleton
+          variant="rectangular"
+          sx={{
+            width: 450,
+            display: "flex",
+            border: "1px solid black",
+            borderRadius: "5px",
+            height: 100,
+            // mt: 5,
+            // ml: 5,
+          }}
+          animation="wave"
+        />
+      </Stack>
+    </>
+  );
+}
