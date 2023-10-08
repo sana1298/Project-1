@@ -26,6 +26,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import axios from "axios";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
+import WishList from "./WhishList";
 
 const Home = () => {
   const [datas, setDatas] = useState([]);
@@ -89,6 +90,10 @@ const Home = () => {
   const handlePageChange = (e, item) => {
     console.log(item.page);
     setPageSearch(item);
+  };
+
+  const removeFromWatchList = (item) => {
+    dispatchWatchList({ type: "REMOVE_FROM_WATCH_LIST", payload: item });
   };
 
   useEffect(() => {
@@ -239,124 +244,86 @@ const Home = () => {
                   }}
                 >
                   <MyLoad />
-                  <MyLoad sx={{ marginTop: 5 }} />
-                  <MyLoad />
-                  {/* <Stack spacing={1}>
-                    <Skeleton
-                      variant="rectangular"
-                      sx={{
-                        width: 450,
-                        display: "flex",
-                        border: "1px solid black",
-                        borderRadius: "5px", 
-                        height: 100,
-                        mt: 5,
-                        ml: 5,
-                      }}
-                      animation="wave"
-                    />
-                  </Stack>
-                  <Stack spacing={1}>
-                    <Skeleton
-                      variant="rectangular"
-                      sx={{
-                        width: 450,
-                        display: "flex",
-                        border: "1px solid black",
-                        borderRadius: "5px",
-                        height: 100,
-                        mt: 5,
-                        ml: 5,
-                      }}
-                      animation="wave"
-                    />
-                  </Stack>
-                  <Stack spacing={1}>
-                    <Skeleton
-                      variant="rectangular"
-                      sx={{
-                        width: 450,
-                        display: "flex",
-                        border: "1px solid black",
-                        borderRadius: "5px",
-                        height: 100,
-                        mt: 5,
-                        ml: 5,
-                      }}
-                      animation="wave"
-                    />
-                  </Stack> */}
+                  
                 </Box>
-              ) : (
-                <Box
-                  sx={{
-                    height: 500,
-                    overflowY: "scroll",
-                  }}
-                >
-                  {filteredItem.map((item, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        width: 450,
-                        // backgroundColor: "blue",
-                        display: "flex",
-                        border: "1px solid black",
-                        borderRadius: "5px",
-                        mt: 5,
-                        ml: 5,
-                      }}
-                      // onClick={(e) => handleCardClick(e, item)}
-                      onDoubleClick={(e) => handleDoubleClick(e, item)}
-                      draggable
-                      onDragStart={(e) => {
-                        e.dataTransfer.setData(
-                          "application/json",
-                          JSON.stringify(item)
-                        );
-                      }}
-                    >
-                      {/* {loading ? (
-                <Box
-                  sx={{
-                    width: 450,
-                    // display: "flex",
-                    border: "1px solid black",
-                    borderRadius: "5px",
-                    height: 500,
-                    mt: 5,
-                    ml: 5,
-                  }}
-                ><MyLoad /> */}
-                      <Box>
-                        <CardMedia
-                          component="img"
-                          height="100"
-                          image={item.images.jpg.image_url}
-                          alt="anime"
-                        />
-                      </Box>
+              ) : ( 
+              <Box
+                sx={{
+                  height: 500,
+                  overflowY: "scroll",
+                }}
+              >
+                {filteredItem.map((item, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      width: 450,
+                      // backgroundColor: "blue",
+                      display: "flex",
+                      border: "1px solid black",
+                      borderRadius: "5px",
+                      mt: 5,
+                      ml: 5,
+                    }}
+                    // onClick={(e) => handleCardClick(e, item)}
+                    onDoubleClick={(e) => handleDoubleClick(e, item)}
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData(
+                        "application/json",
+                        JSON.stringify(item)
+                      );
+                    }}
+                  >
+                    {/* {loading ? (
                       <Box
                         sx={{
-                          marginLeft: 5,
-                          marginTop: 5,
+                          width: 450,
+                          // display: "flex",
+                          border: "1px solid black",
+                          borderRadius: "5px",
+                          height: 500,
+                          mt: 5,
+                          ml: 5,
                         }}
                       >
-                        <Typography>Title:{item.title}</Typography>
-                        <Box>
-                          {isInWatchList(item) ? (
-                            <StarIcon sx={{ cursor: "pointer" }}></StarIcon>
-                          ) : (
-                            <StarBorderIcon
-                              sx={{ cursor: "pointer" }}
-                              onDoubleClick={(e) => handleDoubleClick(e, item)}
-                            ></StarBorderIcon>
-                          )}
-                        </Box>
+                        <MyLoad />
                       </Box>
-                    </Box>
-                  ))}
-                </Box>
+                    ) : ( */}
+                      <>
+                        <Box>
+                          <CardMedia
+                            component="img"
+                            height="100"
+                            image={item.images.jpg.image_url}
+                            alt="anime"
+                          />
+                        </Box>
+                        <Box
+                          sx={{
+                            marginLeft: 5,
+                            marginTop: 5,
+                          }}
+                        >
+                          <Typography>Title:{item.title}</Typography>
+                          <Box>
+                            {isInWatchList(item) ? (
+                              <StarIcon sx={{ cursor: "pointer" }}></StarIcon>
+                            ) : (
+                              <StarBorderIcon
+                                sx={{ cursor: "pointer" }}
+                                onDoubleClick={(e) =>
+                                  handleDoubleClick(e, item)
+                                }
+                              ></StarBorderIcon>
+                            )}
+                          </Box>
+                        </Box>
+                      </>
+                    {/* // )} */}
+                  </Box>
+                ))}
+              </Box>
               )}
 
               <Stack spacing={2}>
@@ -394,7 +361,9 @@ const Home = () => {
                 marginTop: "10px",
               }}
             >
-              {watchList.map((item, index) => (
+              <WishList watchList={watchList} removeFromWatchList={removeFromWatchList} />
+
+              {/* {watchList.map((item, index) => (
                 <Box
                   key={index}
                   sx={{
@@ -433,7 +402,7 @@ const Home = () => {
                     </Button>
                   </Box>
                 </Box>
-              ))}
+              ))} */}
             </Box>
           </Box>
         </Box>
@@ -465,3 +434,49 @@ function MyLoad() {
     </>
   );
 }
+
+// {/* <Stack spacing={1}>
+//                     <Skeleton
+//                       variant="rectangular"
+//                       sx={{
+//                         width: 450,
+//                         display: "flex",
+//                         border: "1px solid black",
+//                         borderRadius: "5px",
+//                         height: 100,
+//                         mt: 5,
+//                         ml: 5,
+//                       }}
+//                       animation="wave"
+//                     />
+//                   </Stack>
+//                   <Stack spacing={1}>
+//                     <Skeleton
+//                       variant="rectangular"
+//                       sx={{
+//                         width: 450,
+//                         display: "flex",
+//                         border: "1px solid black",
+//                         borderRadius: "5px",
+//                         height: 100,
+//                         mt: 5,
+//                         ml: 5,
+//                       }}
+//                       animation="wave"
+//                     />
+//                   </Stack>
+//                   <Stack spacing={1}>
+//                     <Skeleton
+//                       variant="rectangular"
+//                       sx={{
+//                         width: 450,
+//                         display: "flex",
+//                         border: "1px solid black",
+//                         borderRadius: "5px",
+//                         height: 100,
+//                         mt: 5,
+//                         ml: 5,
+//                       }}
+//                       animation="wave"
+//                     />
+//                   </Stack> */}
