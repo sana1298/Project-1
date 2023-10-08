@@ -15,7 +15,7 @@ import {
   CircularProgress,
   Stack,
   Pagination,
-  Skeleton,
+  // Skeleton,
 } from "@mui/material";
 import {
   Link,
@@ -33,8 +33,8 @@ const Home = () => {
   const [searchValues, setSearchValues] = useState("");
   const [values, setValues] = useState([]);
   const [error, setError] = useState([]);
+  const [pageError, setPageError] = useState(false)
   const [loading, setLoading] = useState(true);
-  const [load, setLoad] = useState(true);
   const [pageSearch, setPageSearch] = useState(1);
   const [searchCount, setSearchCount] = useState("");
 
@@ -120,10 +120,12 @@ const Home = () => {
           setSearchCount(response.data.pagination);
           console.log(response.data.data);
           setLoading(false);
-          setLoad(false);
+          setPageError(false);
         })
-        // .catch((error) => console.error("Error fetching products:", error.message));
-        .catch((error) => setError(error.message));
+        .catch((error) =>{
+          setError(error.message)
+          setPageError(true);
+        } );
     }
   }, [loggedIn, pageSearch]);
 
@@ -136,249 +138,132 @@ const Home = () => {
   // };
   return (
     <>
+    {pageError?(<Typography variant="h6">{error}</Typography>
+    ):(
       <Box>
-        <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static">
-            <Toolbar>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                sx={{ mr: 2 }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-              >
-                ANIMATION
-              </Typography>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            >
+              ANIMATION
+            </Typography>
 
-              <Autocomplete
-                sx={{
-                  width: 250,
-                  border: "1px solid blue",
-                }}
-                freeSolo
-                id="free-solo-2-demo"
-                // key={id}
-                disableClearable
-                options={values}
-                // options={searchFilter}
-                getOptionLabel={(option) => option.title}
-                onInputChange={handleChange}
-                renderOption={(props, option) => (
-                  <Link
-                    to={`anime/${option.mal_id}`}
-                    style={{ color: "black", textDecoration: "none" }}
-                  >
-                    <Box
-                      component="li"
-                      sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                      {...props}
-                    >
-                      <CardMedia
-                        component="img"
-                        sx={{ width: 50, height: 50 }}
-                        image={option.images.jpg.small_image_url}
-                        alt="anime"
-                      />
-                      {option.title}
-                    </Box>
-                  </Link>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Search Here..."
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
-                )}
-              />
-              <Button
-                sx={{ marginleft: 5 }}
-                variant="contained"
-                onClick={handleLogout}
-              >
-                Logout
-              </Button>
-            </Toolbar>
-          </AppBar>
-        </Box>
-        {load ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100vh",
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        ) : (
-          ""
-        )}
-        <Box sx={{ display: "flex" }}>
-          <Box>
-            <Typography variant="h6">Movie List</Typography>
-            <Typography variant="h6">{error}</Typography>
-            <Box>
-              {loading ? (
-                <Box
-                  sx={{
-                    width: 450,
-                    // display: "flex",
-                    border: "1px solid black",
-                    borderRadius: "5px",
-                    height: 500,
-                    mt: 5,
-                    ml: 5,
-                  }}
-                >
-                  <MyLoad />
-                  
-                </Box>
-              ) : ( 
-              <Box
-                sx={{
-                  height: 500,
-                  overflowY: "scroll",
-                }}
-              >
-                {filteredItem.map((item, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      width: 450,
-                      // backgroundColor: "blue",
-                      display: "flex",
-                      border: "1px solid black",
-                      borderRadius: "5px",
-                      mt: 5,
-                      ml: 5,
-                    }}
-                    // onClick={(e) => handleCardClick(e, item)}
-                    onDoubleClick={(e) => handleDoubleClick(e, item)}
-                    draggable
-                    onDragStart={(e) => {
-                      e.dataTransfer.setData(
-                        "application/json",
-                        JSON.stringify(item)
-                      );
-                    }}
-                  >
-                    {/* {loading ? (
-                      <Box
-                        sx={{
-                          width: 450,
-                          // display: "flex",
-                          border: "1px solid black",
-                          borderRadius: "5px",
-                          height: 500,
-                          mt: 5,
-                          ml: 5,
-                        }}
-                      >
-                        <MyLoad />
-                      </Box>
-                    ) : ( */}
-                      <>
-                        <Box>
-                          <CardMedia
-                            component="img"
-                            height="100"
-                            image={item.images.jpg.image_url}
-                            alt="anime"
-                          />
-                        </Box>
-                        <Box
-                          sx={{
-                            marginLeft: 5,
-                            marginTop: 5,
-                          }}
-                        >
-                          <Typography>Title:{item.title}</Typography>
-                          <Box>
-                            {isInWatchList(item) ? (
-                              <StarIcon sx={{ cursor: "pointer" }}></StarIcon>
-                            ) : (
-                              <StarBorderIcon
-                                sx={{ cursor: "pointer" }}
-                                onDoubleClick={(e) =>
-                                  handleDoubleClick(e, item)
-                                }
-                              ></StarBorderIcon>
-                            )}
-                          </Box>
-                        </Box>
-                      </>
-                    {/* // )} */}
-                  </Box>
-                ))}
-              </Box>
-              )}
-
-              <Stack spacing={2}>
-                <Typography>Page: {pageSearch}</Typography>
-                <Pagination
-                  count={searchCount.last_visible_page}
-                  page={pageSearch}
-                  onChange={handlePageChange}
-                />
-              </Stack>
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              width: "600px",
-              height: "500px",
-              marginLeft: "60px",
-            }}
-          >
-            <Typography variant="h6">Watch List</Typography>
-            <Box
-              onDrop={(e) => {
-                e.preventDefault();
-                const item = JSON.parse(
-                  e.dataTransfer.getData("application/json")
-                );
-                dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
-              }}
-              onDragOver={(e) => e.preventDefault()}
+            <Autocomplete
               sx={{
-                border: "1px solid #ccc",
-                padding: "10px",
-                minHeight: "100px",
-                marginTop: "10px",
+                width: 250,
+                border: "1px solid blue",
+              }}
+              freeSolo
+              id="free-solo-2-demo"
+              // key={id}
+              disableClearable
+              options={values}
+              // options={searchFilter}
+              getOptionLabel={(option) => option.title}
+              onInputChange={handleChange}
+              renderOption={(props, option) => (
+                <Link
+                  to={`anime/${option.mal_id}`}
+                  style={{ color: "black", textDecoration: "none" }}
+                >
+                  <Box
+                    component="li"
+                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                    {...props}
+                  >
+                    <CardMedia
+                      component="img"
+                      sx={{ width: 50, height: 50 }}
+                      image={option.images.jpg.small_image_url}
+                      alt="anime"
+                    />
+                    {option.title}
+                  </Box>
+                </Link>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search Here..."
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: "new-password",
+                  }}
+                />
+              )}
+            />
+            <Button
+              sx={{ marginleft: 5 }}
+              variant="contained"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </Box>
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        ""
+      )}
+      <Box sx={{ display: "flex" }}>
+        <Box>
+          <Typography variant="h6">Movie List</Typography>
+          {/* <Typography variant="h6">{error}</Typography> */}
+          <Box>
+            <Box
+              sx={{
+                height: 500,
+                overflowY: "scroll",
               }}
             >
-              <WishList watchList={watchList} removeFromWatchList={removeFromWatchList} />
-
-              {/* {watchList.map((item, index) => (
+              {filteredItem.map((item, index) => (
                 <Box
                   key={index}
                   sx={{
+                    width: 450,
+                    // backgroundColor: "blue",
                     display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "5px",
+                    border: "1px solid black",
+                    borderRadius: "5px",
+                    mt: 5,
+                    ml: 5,
+                  }}
+                  // onClick={(e) => handleCardClick(e, item)}
+                  onDoubleClick={(e) => handleDoubleClick(e, item)}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData(
+                      "application/json",
+                      JSON.stringify(item)
+                    );
                   }}
                 >
-                  <Box
-                    sx={{
-                      width: 400,
-                      display: "flex",
-                    }}
-                  >
+                  <>
                     <Box>
                       <CardMedia
                         component="img"
@@ -387,96 +272,98 @@ const Home = () => {
                         alt="anime"
                       />
                     </Box>
-                    <Box>
-                      <Typography>Title:{item.title}</Typography>
-                    </Box>
-                    <Button
-                      onClick={() =>
-                        dispatchWatchList({
-                          type: "REMOVE_FROM_WATCH_LIST",
-                          payload: item,
-                        })
-                      }
+                    <Box
+                      sx={{
+                        marginLeft: 5,
+                        marginTop: 5,
+                      }}
                     >
-                      Remove
-                    </Button>
-                  </Box>
+                      <Typography>Title:{item.title}</Typography>
+                      <Box>
+                        {isInWatchList(item) ? (
+                          <StarIcon sx={{ cursor: "pointer" }}></StarIcon>
+                        ) : (
+                          <StarBorderIcon
+                            sx={{ cursor: "pointer" }}
+                            onDoubleClick={(e) => handleDoubleClick(e, item)}
+                          ></StarBorderIcon>
+                        )}
+                      </Box>
+                    </Box>
+                  </>
                 </Box>
-              ))} */}
+              ))}
             </Box>
+
+            <Stack spacing={2}>
+              <Typography>Page: {pageSearch}</Typography>
+              <Pagination
+                count={searchCount.last_visible_page}
+                page={pageSearch}
+                onChange={handlePageChange}
+              />
+            </Stack>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            width: "600px",
+            height: "500px",
+            marginLeft: "60px",
+          }}
+        >
+          <Typography variant="h6">Watch List</Typography>
+          <Box
+            onDrop={(e) => {
+              e.preventDefault();
+              const item = JSON.parse(
+                e.dataTransfer.getData("application/json")
+              );
+              dispatchWatchList({ type: "ADD_TO_WATCH_LIST", payload: item });
+            }}
+            onDragOver={(e) => e.preventDefault()}
+            sx={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              minHeight: "100px",
+              marginTop: "10px",
+            }}
+          >
+            <WishList
+              watchList={watchList}
+              removeFromWatchList={removeFromWatchList}
+            />
           </Box>
         </Box>
       </Box>
+    </Box>
+    )}
+     
     </>
   );
 };
 
 export default Home;
 
-function MyLoad() {
-  return (
-    <>
-      <Stack spacing={1}>
-        <Skeleton
-          variant="rectangular"
-          sx={{
-            width: 450,
-            display: "flex",
-            border: "1px solid black",
-            borderRadius: "5px",
-            height: 100,
-            // mt: 5,
-            // ml: 5,
-          }}
-          animation="wave"
-        />
-      </Stack>
-    </>
-  );
-}
-
-// {/* <Stack spacing={1}>
-//                     <Skeleton
-//                       variant="rectangular"
-//                       sx={{
-//                         width: 450,
-//                         display: "flex",
-//                         border: "1px solid black",
-//                         borderRadius: "5px",
-//                         height: 100,
-//                         mt: 5,
-//                         ml: 5,
-//                       }}
-//                       animation="wave"
-//                     />
-//                   </Stack>
-//                   <Stack spacing={1}>
-//                     <Skeleton
-//                       variant="rectangular"
-//                       sx={{
-//                         width: 450,
-//                         display: "flex",
-//                         border: "1px solid black",
-//                         borderRadius: "5px",
-//                         height: 100,
-//                         mt: 5,
-//                         ml: 5,
-//                       }}
-//                       animation="wave"
-//                     />
-//                   </Stack>
-//                   <Stack spacing={1}>
-//                     <Skeleton
-//                       variant="rectangular"
-//                       sx={{
-//                         width: 450,
-//                         display: "flex",
-//                         border: "1px solid black",
-//                         borderRadius: "5px",
-//                         height: 100,
-//                         mt: 5,
-//                         ml: 5,
-//                       }}
-//                       animation="wave"
-//                     />
-//                   </Stack> */}
+// function MyLoad() {
+//   return (
+//     <>
+//       <Stack spacing={1}>
+//         <Skeleton
+//           variant="rectangular"
+//           sx={{
+//             width: 450,
+//             display: "flex",
+//             border: "1px solid black",
+//             borderRadius: "5px",
+//             height: 100,
+//             // mt: 5,
+//             // ml: 5,
+//           }}
+//           animation="wave"
+//         />
+//       </Stack>
+//     </>
+//   );
+// }
