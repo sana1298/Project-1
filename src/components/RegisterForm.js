@@ -12,23 +12,24 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const nameRegex = /^[A-Za-z\s]+$/;
 const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-const passwordRegex =/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+const passwordRegex =
+  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
 const alertMsg = {
   error: {
     msg: "Please Register!",
-    severity:"error",
-    key:'error'
+    severity: "error",
+    key: "error",
   },
   empty: {
     msg: "Please Enter Details!",
-    severity:"error",
-    key:"empty"
+    severity: "error",
+    key: "empty",
   },
   success: {
     msg: "Logged in successfully!",
-    severity:"success",
-    key:"success"
+    severity: "success",
+    key: "success",
   },
 };
 
@@ -36,36 +37,28 @@ const RegisterForm = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [pswd, setPswd] = useState("");
+  const [nameError, setNameError] = useState(false);
   const [error, setError] = useState({
     pwd: false,
     mail: false,
-    name: "Enter Your Name",
+    name:false,
   });
-  // const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-  // const [errors, setErrors] = useState(false)
-  const [errorType,setErrorType]= useState("");
-
+  const [errorType, setErrorType] = useState("");
 
   const handleClick = (e) => {
     e.preventDefault();
-    if(email==='' && pswd==='' && userName==='') {
-      // setErrors(true)
-      setErrorType(alertMsg.empty.key)
-      // setErrorType("error")
+    if (email === "" && pswd === "" && userName === "") {
+      setErrorType(alertMsg.empty.key);
     }
     if (
       !nameRegex.test(userName) ||
       !emailRegex.test(email) ||
       !passwordRegex.test(pswd)
-    ) 
-    {
-      // setErrorType("error")
-      // setErrorType(alertMsg.empty.key)
-
+    ) {
+      setNameError(!nameRegex.test(userName));
       setError(true);
-    } 
-    else {
+    } else {
       const userDetails = {
         userName: userName,
         email: email,
@@ -82,19 +75,15 @@ const RegisterForm = () => {
       setUserName("");
       setEmail("");
       setPswd("");
-      setError({ pwd: false, mail: false, name: error.name });
+      setNameError(false);
+      setError({ pwd: false, mail: false });
     }
   };
-  // setEmail("");
-  // setPswd("");
-  // setUserName("");
   const handleClose = (reason) => {
     if (reason === "clickaway") {
       return;
     }
-    // setSuccess(false);
-    // setErrors(false)
-    setErrorType("")
+    setErrorType("");
   };
   return (
     <>
@@ -110,18 +99,24 @@ const RegisterForm = () => {
       >
         <Typography variant="h5">Register</Typography>
         <TextField
-          sx={{ my: 1 }}
+          sx={{ my: 1, width: 260 }}
           id="outlined-basic"
           label="Name"
           variant="outlined"
           name="userName"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
-          onBlur={(e, error) =>
-            setError((state) => ({ ...state, name: 'Enter Your Name' }))
-          }
+          // onBlur={(e,error) =>
+          //   setError((state) => ({ ...state, name:error }))
+          // }
+          // helperText={
+          //   error.name ? "Please enter a valid name (letters and spaces only)" : ""
+          // }
+          onBlur={() => setNameError(!nameRegex.test(userName))}
+          helperText={nameError ? "Please enter a valid name" : ""}
         />
         <EmailField
+          sx={{ my: 1, width: 260 }}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onBlur={(e, error) =>
@@ -129,6 +124,7 @@ const RegisterForm = () => {
           }
         ></EmailField>
         <PasswordInput
+          sx={{ my: 1 }}
           value={pswd}
           onChange={(e) => setPswd(e.target.value)}
           onBlur={(e, error) => setError((state) => ({ ...state, pwd: error }))}
@@ -142,20 +138,6 @@ const RegisterForm = () => {
           msg={alertMsg[errorType]?.msg}
           severity={alertMsg[errorType]?.severity}
         />
-        {/* <Snackbar open={success} autoHideDuration={3000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Successfully Registered!
-          </Alert>
-        </Snackbar>
-        <Snackbar open={errors} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-           Register Failed!
-          </Alert>
-        </Snackbar> */}
         <Typography variant="h6">
           Already have an account?<Link to="/">Login</Link>
         </Typography>
@@ -165,7 +147,6 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
-
 
 function MyAlert({ msg, onClose, open, severity }) {
   return (
