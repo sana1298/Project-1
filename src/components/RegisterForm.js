@@ -27,7 +27,7 @@ const alertMsg = {
     key: "empty",
   },
   success: {
-    msg: "Logged in successfully!",
+    msg: "Registered successfully!",
     severity: "success",
     key: "success",
   },
@@ -56,7 +56,7 @@ const RegisterForm = () => {
       !emailRegex.test(email) ||
       !passwordRegex.test(pswd)
     ) {
-      setNameError(!nameRegex.test(userName));
+      setNameError(true);
       setError(true);
     } else {
       const userDetails = {
@@ -106,14 +106,9 @@ const RegisterForm = () => {
           name="userName"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
-          // onBlur={(e,error) =>
-          //   setError((state) => ({ ...state, name:error }))
-          // }
-          // helperText={
-          //   error.name ? "Please enter a valid name (letters and spaces only)" : ""
-          // }
-          onBlur={() => setNameError(!nameRegex.test(userName))}
+          onBlur={() => setNameError((state)=> ({ ...state, name:nameError}))}
           helperText={nameError ? "Please enter a valid name" : ""}
+          error={nameError}
         />
         <EmailField
           sx={{ my: 1, width: 260 }}

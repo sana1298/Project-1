@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardMedia,
   CircularProgress,
@@ -8,7 +9,7 @@ import {
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AnimeDetails = () => {
   const { id } = useParams();
@@ -16,6 +17,10 @@ const AnimeDetails = () => {
   const [error, setError] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState(false);
+  const navigate=useNavigate()
+  const handleClick = () => {
+    navigate('/home')
+  }
 
   useEffect(() => {
     axios
@@ -131,6 +136,9 @@ const AnimeDetails = () => {
                     </Box>
                   </Box>
                 </Box>
+                <Button sx={{ my: 1 }} variant="contained" onClick={handleClick}>
+          GoBack
+        </Button>
               </Box>
             </>
           )}
